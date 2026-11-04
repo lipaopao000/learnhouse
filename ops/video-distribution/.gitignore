@@ -1,0 +1,5 @@
+*.private*
+*.zip
+cache/
+logs/
+__pycache__/

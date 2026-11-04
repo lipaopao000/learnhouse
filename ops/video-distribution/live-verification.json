@@ -1,0 +1,87 @@
+{
+  "deployment_date": "2026-11-05",
+  "domain": "syyedu.toofun.fun",
+  "origin": "100.64.0.4:18887",
+  "edge": "127.0.0.1:18887",
+  "origin_cache_limit_gb": 30,
+  "edge_cache_limit_gb": 3,
+  "app_source_changed": false,
+  "video_sha256": "01af3d72f0079f57dda493ce1cd2bce7082ca1801f1c71f556a9c298a92e48bb",
+  "video_bytes": 277382743,
+  "warm": [
+    {
+      "target": "origin",
+      "bytes": 277382743,
+      "sha256": "01af3d72f0079f57dda493ce1cd2bce7082ca1801f1c71f556a9c298a92e48bb",
+      "cache_hits": 67,
+      "ranges": 67,
+      "retries": 0,
+      "seconds": 128.241
+    },
+    {
+      "target": "edge",
+      "bytes": 277382743,
+      "sha256": "01af3d72f0079f57dda493ce1cd2bce7082ca1801f1c71f556a9c298a92e48bb",
+      "cache_hits": 67,
+      "ranges": 67,
+      "retries": 0,
+      "seconds": 9.801
+    }
+  ],
+  "browser": {
+    "pageStatus": 200,
+    "metadata": {
+      "duration": 2597.713991,
+      "width": 1920,
+      "height": 882,
+      "error": null
+    },
+    "playbackTime": 2.010216,
+    "seekTime": 1801.019612,
+    "passed": true
+  },
+  "acl": [
+    {
+      "check": "private_anonymous_before_cache",
+      "status": 401,
+      "cache": null,
+      "bytes": 172
+    },
+    {
+      "check": "private_admin_cache_fill",
+      "status": 200,
+      "cache": "MISS",
+      "bytes": 2270
+    },
+    {
+      "check": "private_admin_cache_hit",
+      "status": 200,
+      "cache": "HIT",
+      "bytes": 2270
+    },
+    {
+      "check": "private_anonymous_after_cache",
+      "status": 401,
+      "cache": null,
+      "bytes": 172
+    },
+    {
+      "check": "private_cookie_range",
+      "status": 206,
+      "cache": "HIT"
+    },
+    {
+      "check": "fixture_cleanup",
+      "status": 200
+    },
+    {
+      "check": "deleted_resource_even_admin",
+      "status": 403
+    }
+  ],
+  "websocket": {
+    "collab_upgrade": 101,
+    "certificate_hostname_verified": true
+  },
+  "concurrent_200_viewers_tested": false
+}

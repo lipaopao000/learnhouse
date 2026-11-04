@@ -1,0 +1,20 @@
+[Unit]
+Description=LearnHouse authenticated video edge cache
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+Type=forking
+PIDFile=/run/learnhouse-video-edge.pid
+ExecStartPre=/usr/sbin/nginx -t -p /opt/learnhouse-video-edge/ -c nginx.conf
+ExecStart=/usr/sbin/nginx -p /opt/learnhouse-video-edge/ -c nginx.conf
+ExecReload=/usr/sbin/nginx -p /opt/learnhouse-video-edge/ -c nginx.conf -s reload
+ExecStop=/usr/sbin/nginx -p /opt/learnhouse-video-edge/ -c nginx.conf -s quit
+TimeoutStopSec=30
+Restart=on-failure
+RestartSec=5
+PrivateTmp=true
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
