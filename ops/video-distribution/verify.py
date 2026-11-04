@@ -4,9 +4,13 @@ Requires an SSH tunnel for a pre-cutover edge URL, or the final HTTPS site.
 Only the generated course is deleted. Credentials/tokens never enter output.
 """
 import argparse
+import base64
 import hashlib
 import json
 import pathlib
+import struct
+import subprocess
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -15,9 +19,14 @@ import uuid
 parser = argparse.ArgumentParser()
 parser.add_argument('--deployment-dir', type=pathlib.Path, required=True)
 parser.add_argument('--edge-base', default='http://127.0.0.1:19887')
+parser.add_argument('--fixture-size-mib', type=int, default=0, choices=range(0, 17))
+parser.add_argument('--verify-origin', action='store_true')
+parser.add_argument('--verify-prefetch', action='store_true')
+parser.add_argument('--output-dir', type=pathlib.Path)
 args = parser.parse_args()
 root = args.deployment_dir.resolve()
-output = root / 'video-distribution'
+output = args.output_dir or root / 'video-distribution'
+output.mkdir(mode=0o700, parents=True, exist_ok=True)
 base = 'https://syyedu.toofun.fun'
 env = json.loads((root / 'config/env.private.json').read_text())
 token = None
@@ -58,7 +67,12 @@ try:
     (output / 'fixture-state.json').write_text(json.dumps({'course_uuid': course_uuid}))
     chapter = api('/api/v1/chapters/', {
         'name': 'Temporary', 'org_id': 1, 'course_id': course['id']})
-    fixture = (output / 'security-fixture.mp4').read_bytes()
+    fixture = (root / 'video-distribution/security-fixture.mp4').read_bytes()
+    if args.fixture_size_mib:
+        padding = args.fixture_size_mib * 1048576 - len(fixture)
+        assert padding >= 8
+        # A valid ISO BMFF free box pads the synthetic clip to a known size.
+        fixture += struct.pack('>I4s', padding, b'free') + bytes(padding - 8)
     boundary = 'LearnHouseCacheCheck' + uuid.uuid4().hex
     chunks = []
     for key, value in {'name': 'Temporary video', 'chapter_id': chapter['id'], 'details': '{}'}.items():
@@ -74,15 +88,38 @@ try:
     path = '/api/v1/stream/video/' + '/'.join([
         org['org_uuid'], course_uuid, activity['activity_uuid'], activity['content']['filename']])
     (output / 'fixture-state.json').write_text(json.dumps({'course_uuid': course_uuid, 'path': path}))
+    if args.verify_prefetch:
+        # Observe the timer; do NOT trigger the worker manually.
+        started = time.monotonic()
+        deadline = started + 300
+        entry = None
+        while time.monotonic() < deadline:
+            script = "$ProgressPreference='SilentlyContinue'; Get-Content D:\\deploy\\LearnHouseVideo\\prefetch-state.json -Raw -ErrorAction SilentlyContinue"
+            command = 'powershell -NoProfile -EncodedCommand ' + base64.b64encode(script.encode('utf-16le')).decode()
+            probe = subprocess.run(['ssh', 'icu-jump', command], capture_output=True, timeout=15)
+            try:
+                state = json.loads(probe.stdout.decode('utf-8-sig'))
+                entry = state.get(path)
+            except (ValueError, UnicodeError):
+                entry = None
+            if entry and entry.get('complete') and entry.get('next_offset') == len(fixture):
+                break
+            time.sleep(5)
+        assert entry and entry.get('complete') and entry.get('next_offset') == len(fixture), 'Unattended prefetch did not complete'
+        results.append({'check': 'unattended_prefetch_before_view', 'complete': True,
+            'bytes': len(fixture), 'wait_seconds': round(time.monotonic()-started, 3)})
     for label, authenticated, expected in [
         ('private_anonymous_before_cache', False, (401, 403)),
         ('private_admin_cache_fill', True, (200,)),
         ('private_admin_cache_hit', True, (200,)),
         ('private_anonymous_after_cache', False, (401, 403)),
     ]:
+        started = time.monotonic()
         status, headers, body = call(path, target=args.edge_base, auth=authenticated)
+        elapsed = time.monotonic() - started
         cache = headers.get('x-learnhouse-video-cache')
-        results.append({'check': label, 'status': status, 'cache': cache, 'bytes': len(body)})
+        results.append({'check': label, 'status': status, 'cache': cache, 'bytes': len(body),
+            'seconds': round(elapsed, 4), 'mbps': round(len(body)*8/elapsed/1e6, 2) if authenticated else None})
         assert status in expected, results[-1]
         if authenticated:
             assert body == fixture, 'Cached private video bytes differ'
@@ -93,6 +130,24 @@ try:
         headers={'Cookie': 'LH_access=' + token, 'Range': 'bytes=0-31'})
     results.append({'check': 'private_cookie_range', 'status': status, 'cache': headers.get('x-learnhouse-video-cache')})
     assert status == 206 and body == fixture[:32], results[-1]
+    if args.verify_origin:
+        config = {'path': path, 'token': token, 'expected': hashlib.sha256(fixture).hexdigest()}
+        code = '''
+import json,pathlib,re,urllib.request,hashlib,time
+config=CONFIG_VALUE
+key=re.search(r'X-LearnHouse-Origin-Key "([a-f0-9]+)"',pathlib.Path('/opt/learnhouse-video-edge/nginx.conf').read_text()).group(1)
+url='http://100.64.0.4:18887'+config['path']
+req=urllib.request.Request(url,headers={'X-LearnHouse-Origin-Key':key,'Authorization':'Bearer '+config['token']})
+started=time.monotonic()
+with urllib.request.urlopen(req,timeout=45) as r:
+ body=r.read();elapsed=time.monotonic()-started;cache=r.headers.get('X-LearnHouse-Origin-Cache')
+ assert r.status==200 and cache=='HIT' and hashlib.sha256(body).hexdigest()==config['expected']
+ print(json.dumps({'check':'private_origin_cache_hit','status':r.status,'cache':cache,'bytes':len(body),'sha256_verified':True,'seconds':round(elapsed,4),'mbps':round(len(body)*8/elapsed/1e6,2)}))
+'''.replace('CONFIG_VALUE', repr(config))
+        proc = subprocess.run(['ssh', '-o', 'HostName=100.64.0.3', 'toofun', 'python3 -'],
+            input=code, text=True, capture_output=True, timeout=60)
+        assert proc.returncode == 0, proc.stderr[-1500:]
+        results.append(json.loads(proc.stdout))
 finally:
     if course_uuid:
         status, _, body = call('/api/v1/courses/' + course_uuid, method='DELETE')

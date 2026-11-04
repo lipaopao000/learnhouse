@@ -21,10 +21,16 @@ for source, output in [
     ('origin.nginx.conf.template', 'origin.nginx.private.conf'),
     ('edge.nginx.conf.template', 'edge.nginx.private.conf'),
     ('install-origin.ps1', 'install-origin.ps1'),
+    ('prefetch.ps1', 'prefetch.ps1'),
+    ('install-prefetch.ps1', 'install-prefetch.ps1'),
 ]:
     content = (pathlib.Path(__file__).parent / source).read_text()
     content = content.replace('__ORIGIN_IP__', args.origin_ip).replace('__ORIGIN_KEY__', key)
     path = target / output
     path.write_text(content)
     path.chmod(0o600)
+prefetch = target / 'prefetch.private.json'
+prefetch.write_text(json.dumps({'read_key': key, 'origin_base': 'http://' + args.origin_ip + ':18887',
+    'export_base': 'http://100.64.0.6:8806/__learnhouse_export'}, indent=2))
+prefetch.chmod(0o600)
 print(json.dumps({'origin': args.origin_ip, 'output': str(target)}))

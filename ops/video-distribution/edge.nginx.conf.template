@@ -11,6 +11,9 @@ http {
     sendfile on;
     tcp_nopush on;
     map $http_upgrade $learnhouse_connection_upgrade { default upgrade; '' ''; }
+    # Smooth connection bursts to the home permissions service, without caching
+    # permissions. Normal video byte transfer rate is not limited.
+    limit_req_zone $server_name zone=learnhouse_video_starts:1m rate=50r/s;
     log_format video '$time_iso8601 $remote_addr $request_method $uri $status '
         '$body_bytes_sent cache=$upstream_cache_status upstream=$upstream_addr rt=$request_time';
     access_log /opt/learnhouse-video-edge/logs/access.log video;
@@ -27,7 +30,10 @@ http {
         server_name syyedu.toofun.fun;
         client_max_body_size 6g;
         large_client_header_buffers 4 32k;
-        location ~ ^/api/v1/stream/(video|block)/ {
+        location ^~ /__learnhouse_export/ { return 404; }
+        location ~ ^/api/v1/stream/(video/|block/(?!audio/)) {
+            limit_req zone=learnhouse_video_starts burst=400;
+            limit_req_status 503;
             limit_except GET HEAD { deny all; }
             # ALWAYS authorise before cache access, including cache hits.
             auth_request /__learnhouse_video_auth;

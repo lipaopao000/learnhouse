@@ -1,0 +1,9 @@
+-- Substitute a newly generated password locally; never commit the rendered SQL.
+CREATE ROLE learnhouse_video_cache LOGIN PASSWORD '__ROLE_PASSWORD__';
+ALTER ROLE learnhouse_video_cache SET default_transaction_read_only=on;
+GRANT CONNECT ON DATABASE learnhouse TO learnhouse_video_cache;
+GRANT USAGE ON SCHEMA public TO learnhouse_video_cache;
+GRANT SELECT (id,org_uuid) ON organization TO learnhouse_video_cache;
+GRANT SELECT (id,org_id,course_uuid) ON course TO learnhouse_video_cache;
+GRANT SELECT (id,course_id,activity_uuid,content) ON activity TO learnhouse_video_cache;
+GRANT SELECT (id,activity_id,course_id,block_uuid,content,block_type) ON block TO learnhouse_video_cache;

@@ -1,0 +1,187 @@
+{
+  "tested_at": "2026-11-05",
+  "cache_configuration": {
+    "origin_ip": "100.64.0.4",
+    "origin_capacity_limit_gb": null,
+    "edge_capacity_limit_gb": 3,
+    "slice_mib": 4
+  },
+  "network_median_mbps": {
+    "home_to_cloud": 9.74,
+    "origin_cache_to_cloud": 18.14,
+    "cloud_cache_loopback": 717.18,
+    "home_to_origin": 9.12,
+    "cloud_to_mac_public": 137.82
+  },
+  "public_16_concurrent": {
+    "successes": 16,
+    "bytes": 67108864,
+    "seconds": 4.544,
+    "aggregate_mbps": 118.15
+  },
+  "cold_hot_fixture": [
+    {
+      "check": "private_anonymous_before_cache",
+      "status": 401,
+      "cache": null,
+      "bytes": 172,
+      "seconds": 0.2596,
+      "mbps": null
+    },
+    {
+      "check": "private_admin_cache_fill",
+      "status": 200,
+      "cache": "MISS",
+      "bytes": 8388608,
+      "seconds": 43.9651,
+      "mbps": 1.53
+    },
+    {
+      "check": "private_admin_cache_hit",
+      "status": 200,
+      "cache": "HIT",
+      "bytes": 8388608,
+      "seconds": 1.0136,
+      "mbps": 66.21
+    },
+    {
+      "check": "private_anonymous_after_cache",
+      "status": 401,
+      "cache": null,
+      "bytes": 172,
+      "seconds": 0.4728,
+      "mbps": null
+    },
+    {
+      "check": "private_cookie_range",
+      "status": 206,
+      "cache": "HIT"
+    },
+    {
+      "check": "private_origin_cache_hit",
+      "status": 200,
+      "cache": "HIT",
+      "bytes": 8388608,
+      "sha256_verified": true,
+      "seconds": 3.8235,
+      "mbps": 17.55
+    },
+    {
+      "check": "fixture_cleanup",
+      "status": 200
+    },
+    {
+      "check": "deleted_resource_even_admin",
+      "status": 403
+    }
+  ],
+  "existing_content_inventory": {
+    "videos": 1,
+    "bytes": 277382743,
+    "prewarm_scope": "all currently stored MP4/WebM files"
+  },
+  "limitation": "Single Mac public client; short ranges, not sustained 200-user playback. Cold-cache 8MiB transfer was slow; 43.9651 seconds vs 1.0136 seconds warm. Exact cause not established by these measurements.",
+  "full_video_integrity": [
+    {
+      "target": "origin",
+      "bytes": 277382743,
+      "sha256": "01af3d72f0079f57dda493ce1cd2bce7082ca1801f1c71f556a9c298a92e48bb",
+      "cache_hits": 67,
+      "ranges": 67,
+      "retries": 0,
+      "seconds": 132.785
+    },
+    {
+      "target": "edge",
+      "bytes": 277382743,
+      "sha256": "01af3d72f0079f57dda493ce1cd2bce7082ca1801f1c71f556a9c298a92e48bb",
+      "cache_hits": 67,
+      "ranges": 67,
+      "retries": 0,
+      "seconds": 7.688
+    }
+  ],
+  "automatic_prefetch": [
+    {
+      "check": "unattended_prefetch_before_view",
+      "complete": true,
+      "bytes": 8388608,
+      "wait_seconds": 81.0
+    },
+    {
+      "check": "private_anonymous_before_cache",
+      "status": 401,
+      "cache": null,
+      "bytes": 172,
+      "seconds": 0.2811,
+      "mbps": null
+    },
+    {
+      "check": "private_admin_cache_fill",
+      "status": 200,
+      "cache": "MISS",
+      "bytes": 8388608,
+      "seconds": 3.7438,
+      "mbps": 17.93
+    },
+    {
+      "check": "private_admin_cache_hit",
+      "status": 200,
+      "cache": "HIT",
+      "bytes": 8388608,
+      "seconds": 0.7851,
+      "mbps": 85.47
+    },
+    {
+      "check": "private_anonymous_after_cache",
+      "status": 401,
+      "cache": null,
+      "bytes": 172,
+      "seconds": 0.1951,
+      "mbps": null
+    },
+    {
+      "check": "private_cookie_range",
+      "status": 206,
+      "cache": "HIT"
+    },
+    {
+      "check": "private_origin_cache_hit",
+      "status": 200,
+      "cache": "HIT",
+      "bytes": 8388608,
+      "sha256_verified": true,
+      "seconds": 3.6019,
+      "mbps": 18.63
+    },
+    {
+      "check": "fixture_cleanup",
+      "status": 200
+    },
+    {
+      "check": "deleted_resource_even_admin",
+      "status": 403
+    }
+  ],
+  "public_200_burst_after_queue": {
+    "clients": 200,
+    "range_bytes": 1048576,
+    "successes": 73,
+    "failures": 127,
+    "total_bytes": 76546048,
+    "seconds": 5.538,
+    "aggregate_mbps": 110.58,
+    "ttfb_p50_ms": 3324.3,
+    "ttfb_p95_ms": 5002.8,
+    "limitation": "Single-client burst test; not sustained playback by 200 independent viewers.",
+    "errors": {
+      "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1028)>": 127
+    }
+  },
+  "internal_200_after_queue": {
+    "cloud_http_counts": {
+      "ok": 200
+    },
+    "seconds": 19.321
+  }
+}

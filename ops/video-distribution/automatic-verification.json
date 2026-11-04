@@ -1,0 +1,180 @@
+{
+  "portainer_stack": 19,
+  "exporter_container": "learnhouse-video-exporter",
+  "origin_prefetch_task": "LearnHouseVideo-Prefetch",
+  "interval_minutes": 2,
+  "draft_prefetch_before_view_verified": true,
+  "admin_password_stored_on_origin": false,
+  "read_only_database_role": "learnhouse_video_cache",
+  "user_table_read_denied": true,
+  "database_write_denied": true,
+  "public_export_hidden_status": 404,
+  "cache_limit_gb": {
+    "origin": null,
+    "cloud": 3
+  },
+  "acl_and_prefetch": [
+    {
+      "check": "unattended_prefetch_before_view",
+      "complete": true,
+      "bytes": 8388608,
+      "wait_seconds": 81.0
+    },
+    {
+      "check": "private_anonymous_before_cache",
+      "status": 401,
+      "cache": null,
+      "bytes": 172,
+      "seconds": 0.2811,
+      "mbps": null
+    },
+    {
+      "check": "private_admin_cache_fill",
+      "status": 200,
+      "cache": "MISS",
+      "bytes": 8388608,
+      "seconds": 3.7438,
+      "mbps": 17.93
+    },
+    {
+      "check": "private_admin_cache_hit",
+      "status": 200,
+      "cache": "HIT",
+      "bytes": 8388608,
+      "seconds": 0.7851,
+      "mbps": 85.47
+    },
+    {
+      "check": "private_anonymous_after_cache",
+      "status": 401,
+      "cache": null,
+      "bytes": 172,
+      "seconds": 0.1951,
+      "mbps": null
+    },
+    {
+      "check": "private_cookie_range",
+      "status": 206,
+      "cache": "HIT"
+    },
+    {
+      "check": "private_origin_cache_hit",
+      "status": 200,
+      "cache": "HIT",
+      "bytes": 8388608,
+      "sha256_verified": true,
+      "seconds": 3.6019,
+      "mbps": 18.63
+    },
+    {
+      "check": "fixture_cleanup",
+      "status": 200
+    },
+    {
+      "check": "deleted_resource_even_admin",
+      "status": 403
+    }
+  ],
+  "browser": {
+    "passed": true,
+    "metadata": {
+      "duration": 2597.713991,
+      "width": 1920,
+      "height": 882,
+      "error": null
+    },
+    "playbackTime": 2.005418,
+    "seekTime": 1801.020205
+  },
+  "status": {
+    "task": "LearnHouseVideo-Prefetch",
+    "last_result": 0,
+    "next_run": "2026-11-05T06:27:27.0000000+08:00",
+    "status": {
+      "errors": 0,
+      "finished_at": "2026-11-04T22:25:38.6517653Z",
+      "deferred": false,
+      "skipped": 1,
+      "completed": 0,
+      "scanned": 1,
+      "downloaded_bytes": 0
+    },
+    "completed_entries": 2
+  },
+  "post_write_persistence_timer_test": [
+    {
+      "check": "unattended_prefetch_before_view",
+      "complete": true,
+      "bytes": 1048576,
+      "wait_seconds": 64.323
+    },
+    {
+      "check": "private_anonymous_before_cache",
+      "status": 401,
+      "cache": null,
+      "bytes": 172,
+      "seconds": 0.1987,
+      "mbps": null
+    },
+    {
+      "check": "private_admin_cache_fill",
+      "status": 200,
+      "cache": "MISS",
+      "bytes": 1048576,
+      "seconds": 0.8133,
+      "mbps": 10.31
+    },
+    {
+      "check": "private_admin_cache_hit",
+      "status": 200,
+      "cache": "HIT",
+      "bytes": 1048576,
+      "seconds": 0.5862,
+      "mbps": 14.31
+    },
+    {
+      "check": "private_anonymous_after_cache",
+      "status": 401,
+      "cache": null,
+      "bytes": 172,
+      "seconds": 0.247,
+      "mbps": null
+    },
+    {
+      "check": "private_cookie_range",
+      "status": 206,
+      "cache": "HIT"
+    },
+    {
+      "check": "private_origin_cache_hit",
+      "status": 200,
+      "cache": "HIT",
+      "bytes": 1048576,
+      "sha256_verified": true,
+      "seconds": 0.7751,
+      "mbps": 10.82
+    },
+    {
+      "check": "fixture_cleanup",
+      "status": 200
+    },
+    {
+      "check": "deleted_resource_even_admin",
+      "status": 403
+    }
+  ],
+  "final_worker_status": {
+    "last_result": 0,
+    "next_run": "2026-11-05T06:33:33.0000000+08:00",
+    "status": {
+      "errors": 0,
+      "finished_at": "2026-11-04T22:31:40.2429405Z",
+      "deferred": false,
+      "skipped": 1,
+      "completed": 1,
+      "scanned": 2,
+      "downloaded_bytes": 1048576
+    }
+  },
+  "per_slice_persisted_hit_check": true
+}

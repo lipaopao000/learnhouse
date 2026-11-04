@@ -7,17 +7,45 @@
 实际播放命中腾讯云缓存时，不再从家庭网络传输视频正文。网关在每次请求读取缓存前，仍向原应用发 HEAD 请求校验课程、课时和用户权限；不会缓存权限结果。应用离线时校验失败，视频也不能访问。
 
 - 腾讯云：独立 systemd 服务 `learnhouse-video-edge`，只监听 `127.0.0.1:18887`；配置和日志位于 `/opt/learnhouse-video-edge/`，缓存最多 3GB。复用现有 nginx 二进制，不修改系统 nginx 监听。
-- 100.64.0.4：原生 nginx/Windows 1.31.8；`D:\deploy\LearnHouseVideo\`，按用户要求不设置缓存容量上限，实际受 D 盘可用空间限制；连续 90 天未访问的缓存仍会淘汰。只监听 `100.64.0.4:18887`。防火墙和 nginx 仅允许腾讯云 Tailnet IP，另需独立随机请求密钥。未安装 Docker，也未暴露现有共享目录。腾讯云仍保留 3GB 上限和 30 天闲置淘汰。
+- 100.64.0.4：原生 nginx/Windows 1.31.8；`D:\deploy\LearnHouseVideo\`，按用户要求不设置缓存容量上限，实际受 D 盘可用空间限制；连续 90 天未访问的缓存仍会淘汰。只监听 `100.64.0.4:18887`。nginx 仅允许腾讯云和本机 Tailnet IP，另需独立随机请求密钥。外部入站防火墙只允许腾讯云。未安装 Docker，也未暴露现有共享目录。腾讯云仍保留 3GB 上限和 30 天闲置淘汰。
 - 计划任务 `LearnHouseVideo-Origin` 以 SYSTEM 运行 nginx，配置开机启动和每两分钟重试；正在运行时忽略重复启动。Tailscale 地址尚未出现时启动可能失败，后续自动重试。Windows 整机重启后的恢复尚未实测。
-- 两级缓存都按 URI 和 4MB Range 分片保存，忽略原响应的浏览器缓存指令。它们是受保护的服务器缓存，公网始终先经过原生 RBAC。浏览器收到 `private, no-store`。只缓存 `/api/v1/stream/video/`、`/api/v1/stream/block/`，其他请求直接透传。
+- 两级缓存都按 URI 和 4MB Range 分片保存，忽略原响应的浏览器缓存指令。它们是受保护的服务器缓存，公网始终先经过原生 RBAC。浏览器收到 `private, no-store`。只缓存视频课时和视频块，明确排除 `/api/v1/stream/block/audio/`；其他资源保持原应用行为。
+- 视频启动请求使用共享短队列，以每秒 50 个新请求平滑权限服务连接突发，最多容纳 400 个排队请求；不限制视频正文的传输速率，也不缓存权限结果。队列满时返回 503。它修复了内部 200 请求突发测试的家庭上游连接重置；公网瞬时 TLS 突发仍未通过。
 - 文件 UUID 变化会自然产生新缓存；删除、取消发布或收紧权限后，原生 HEAD 校验会阻止访问已有缓存。不要原地覆盖同名视频文件；应使用正常上传生成新 UUID。
 - `.4` 暂时不可用时，腾讯云已有缓存仍可用；新的缓存缺失请求可回退到 server-ba。回退意味着再次占用家庭带宽。缓存不是备份，原始文件仍在 `D:\deploy\LearnHouse\content`。
 
 ## 维护和预热
 
+### 代码运行位置
+
+| 文件 | 运行位置 | 职责 |
+| --- | --- | --- |
+| `edge.nginx.conf.template` 的渲染结果 | 腾讯云独立 nginx 服务 | 权限校验、短队列、3GB 热缓存、公网分发 |
+| `origin.nginx.conf.template` 的渲染结果 | `.4` 原生 nginx | 视频磁盘缓存，无人为容量上限 |
+| `prefetch.ps1` | `.4` 的 SYSTEM 计划任务 | 定时主动预热、断点续传和失败重试 |
+| `exporter.py` | server-ba 独立 Portainer Stack 19 | 只读视频清单和原文件接口 |
+
+Lucky 只作为 HTTPS 入口和反向代理，不执行这里的视频缓存或主动预热。后续 LearnHouse 升级除了验证播放和权限，还要验证导出清单的数据库字段及自动预热。
+
 私密配置只在部署工作目录 `video-distribution/` 中，不提交 Git。请求密钥由 `render.py` 创建或复用，渲染后的 `*.private.conf` 仅供部署。Windows 压缩包来源为 [nginx 官方下载](https://nginx.org/en/download.html)，SHA-256 固定在安装脚本中。Windows 版本属于测试适用方案，参见[官方限制](https://nginx.org/en/docs/windows.html)。
 
-新上传的视频首次播放仍需从家庭网络回源。集体上课前应先预热；预热脚本逐段校验长度、范围并重试，最后比较源站和腾讯云的完整 SHA-256：
+### 自动预热（已部署）
+
+`.4` 上的 SYSTEM 计划任务 `LearnHouseVideo-Prefetch` 在开机和每两分钟触发 `prefetch.ps1`，有任务运行时避免重叠。它会读取清单，优先处理最近上传的视频，逐段请求**本机** nginx，把完整视频提前留在 `.4`，不必由观众第一次播放触发。支持已完成上传且写入数据库的视频课时和嵌入视频，包括未发布草稿。每段校验响应状态、长度和 Content-Range，写入后再探测一次 HIT 确认实际落盘，失败重试，进度按分片保存。单轮在约 100 秒后让出运行机会，下一轮从断点继续，避免大文件一直挡住新上传的视频。
+
+清单及原文件由 server-ba 上独立 Portainer **Stack 19 `learnhouse-video-export`** 提供。容器 `learnhouse-video-exporter` 复用现有镜像的 Python 环境，只运行本目录 `exporter.py`，没有修改或重启 LearnHouse 应用。内容目录以只读方式挂载。专用数据库账号 `learnhouse_video_cache` 仅可读列级授权的视频元数据，不可读用户表、不可写数据库；创建模板为 `db-role.sql.template`，实际密码只在私密配置文件中。
+
+家庭 nginx 通过 `/__learnhouse_export/` 连接 Docker 内的导出容器，导出容器本身不发布宿主机端口。访问必须提供私密读取密钥；腾讯云网关无条件屏蔽此路径，对公网返回 404。源站缓存缺失时通过这个受保护接口读取原文件。即使草稿已预热，公网仍先检查原应用权限，不能直接观看。
+
+任务状态是 `D:\deploy\LearnHouseVideo\prefetch-status.json`；逐视频断点记录在 `prefetch-state.json`；密钥和地址在 `prefetch.private.json`。无需保存管理员密码或登录 JWT。已经完成的文件不重复完整下载，每天以每分片一个字节检查和触摸缓存，缺失分片再补齐。因此现存视频不会因为长期没人看而触发 90 天闲置淘汰；原缓存有效期到期时仍会重新回源填充。
+
+新上传的视频**第一次传到 `.4` 仍受家庭上行限制**，自动任务解决的是提前传输和避免重复传输。腾讯云只按实际观看保留 3GB 热缓存，自动任务不会把整个视频库塞进腾讯云。
+
+创建导出服务时，私密配置放在 `D:\deploy\LearnHouseVideoExport\exporter.private.json`，格式是 `{"db_dsn":"postgresql://learnhouse_video_cache:PASSWORD@db:5432/learnhouse","read_key":"SAME_ORIGIN_KEY","org_id":1}`；不要把实际值提交 Git。通过 Portainer 部署 `exporter.compose.yaml`，安装家庭 nginx 中的受保护转发，并使用 `render.py` 渲染源站/网关配置。`.4` 安装并运行 `install-prefetch.ps1`。停用自动预热使用 `Disable-ScheduledTask -TaskName LearnHouseVideo-Prefetch`，需要终止当前预热时再 `Stop-ScheduledTask`；不要停用其他业务任务。
+
+### 手动校验（仅排障或课堂准备时补充使用）
+
+下列脚本仍可逐段核验源站和腾讯云的完整 SHA-256，不再是日常必须执行的步骤：
 
 ```bash
 python3 ops/video-distribution/warm.py --deployment-dir "$DEPLOY_DIR" \
@@ -34,8 +62,8 @@ Windows 修改配置后，以管理员执行 `origin-control.ps1 -Action reload`
 
 1. 确认新主机在线、D 盘空间和有效带宽，原主机继续服务。
 2. `render.py --deployment-dir "$DEPLOY_DIR" --origin-ip 100.64.0.8` 复用密钥并渲染新 IP。它只生成本地文件，不改变在线路由。
-3. 将官方 ZIP、渲染的 `origin.nginx.private.conf`、`install-origin.ps1`、`origin-control.ps1` 放入新主机全新 `D:\deploy\LearnHouseVideo\`，运行安装脚本。ZIP 应仍为脚本固定的 1.31.8；更新版本前需重新核验散列。
-4. 新主机按需重新缓存即可；如需复制旧缓存，只复制已经完成写入的缓存文件并保持目录结构。原文件无需迁移，仍由 server-ba 提供。不要复制业务共享目录。
+3. 将官方 ZIP、渲染的 `origin.nginx.private.conf`、`install-origin.ps1`、`origin-control.ps1` 放入新主机全新 `D:\deploy\LearnHouseVideo\`，运行安装脚本。再复制 `prefetch.ps1`、`install-prefetch.ps1` 和新 IP 的 `prefetch.private.json`，安装自动预热任务。ZIP 应仍为脚本固定的 1.31.8；更新版本前需重新核验散列。
+4. 等新主机自动缓存完成再切换。也可复制旧的完整缓存文件并保持目录结构；未复制完整缓存时不要仅复制 `prefetch-state.json`，否则旧的“完成”状态会暂时跳过预热。原文件无需迁移，仍由 server-ba 提供。不要复制业务共享目录。导出容器和只读数据库账号无需改变。
 5. 先执行 `warm.py --origin-ip 100.64.0.8 ...` 验证新源站。将渲染的 edge 配置送到云端，测试配置并 reload。已有腾讯云缓存无需清空，公网域名和 Lucky 路由无需变更。
 6. 验证播放和 Range，再停用旧主机的任务。回退只需将网关配置中的源站 IP 改回 `.4` 后 reload，旧缓存保留。
 
@@ -58,6 +86,8 @@ python3 ops/video-distribution/route.py --deployment-dir "$DEPLOY_DIR" \
 - 临时私有课程：匿名拒绝、管理员填充及命中缓存、Cookie 播放 Range、缓存后匿名仍拒绝；删除课程后管理员也不能再读缓存。测试课程已删除。
 - 原生登录/创建/上传/删除接口、应用健康和 Headscale 健康正常。未更改其他 Lucky 子规则。
 - `.4` 的专用 nginx 进程停止并通过计划任务重新启动后，源站和公网视频仍命中磁盘缓存；没有重启 Windows 整机。
-- 未进行 200 人并发观看测试，现有 300Mbps 公网规格仍依据用户提供的信息。缓存空间也会影响多课程同时观看时的回源量。
+- 自动预热实测：新建 8MiB 未发布私有视频，没有手动触发任务、没有先读取视频，在 81 秒内由定时任务缓存完毕；首次从公网填充云缓存 3.7438 秒，再读命中 0.7851 秒；内容一致，匿名始终被拒绝。测试课程已删除。
+- 单客户端测速：家庭至云约 9.74Mbps，`.4` 热缓存至云约 18.14Mbps，云缓存至 Mac 公网下载约 137.82Mbps；16 个并发分片全部成功，合计约 118.15Mbps。这些是短时实测，不是带宽保证。
+- 200 突发测试必须区分：平滑前内部 HTTP 155/200，增加视频启动短队列后内部 HTTP 200/200；公网 200 个瞬时 TLS 建连仍有 TLS EOF/429 等失败，尚不能保证 200 人稳定观看。没有进行持续、跨客户端的 200 人视频播放测试。现有 300Mbps 规格仍依据用户提供的信息。
 
 证据保存在部署工作目录的 `video-distribution/`，包括 `warm-verification.json`、`browser-verification.json`、`public-verification.json`、`acl-verification.json` 和页面截图。缓存依赖 [nginx 分片模块](https://nginx.org/en/docs/http/ngx_http_slice_module.html)，权限校验使用 [auth_request 模块](https://nginx.org/en/docs/http/ngx_http_auth_request_module.html)。
