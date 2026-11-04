@@ -457,6 +457,10 @@ v1_router.include_router(
     dependencies=[Depends(require_authenticated_user)]
 )
 
+# Opt-in self-hosted administrator CSV provisioning
+from src.routers.orgs.user_import import router as user_import_router
+v1_router.include_router(user_import_router, prefix="/orgs", tags=["user-import"])
+
 # Video Streaming Routes
 v1_router.include_router(
     stream.router,
