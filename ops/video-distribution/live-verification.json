@@ -3,7 +3,7 @@
   "domain": "syyedu.toofun.fun",
   "origin": "100.64.0.4:18887",
   "edge": "127.0.0.1:18887",
-  "origin_cache_limit_gb": 30,
+  "origin_cache_limit_gb": null,
   "edge_cache_limit_gb": 3,
   "app_source_changed": false,
   "video_sha256": "01af3d72f0079f57dda493ce1cd2bce7082ca1801f1c71f556a9c298a92e48bb",
@@ -83,5 +83,11 @@
     "collab_upgrade": 101,
     "certificate_hostname_verified": true
   },
-  "concurrent_200_viewers_tested": false
+  "concurrent_200_viewers_tested": false,
+  "capacity_policy_update": {
+    "origin_max_size_configured": false,
+    "origin_inactive_days": 90,
+    "edge_max_size_gb": 3,
+    "origin_and_public_range_hit_verified": true
+  }
 }

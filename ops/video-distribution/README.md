@@ -7,7 +7,7 @@
 实际播放命中腾讯云缓存时，不再从家庭网络传输视频正文。网关在每次请求读取缓存前，仍向原应用发 HEAD 请求校验课程、课时和用户权限；不会缓存权限结果。应用离线时校验失败，视频也不能访问。
 
 - 腾讯云：独立 systemd 服务 `learnhouse-video-edge`，只监听 `127.0.0.1:18887`；配置和日志位于 `/opt/learnhouse-video-edge/`，缓存最多 3GB。复用现有 nginx 二进制，不修改系统 nginx 监听。
-- 100.64.0.4：原生 nginx/Windows 1.31.8；`D:\deploy\LearnHouseVideo\`，缓存最多 30GB；只监听 `100.64.0.4:18887`。防火墙和 nginx 仅允许腾讯云 Tailnet IP，另需独立随机请求密钥。未安装 Docker，也未暴露现有共享目录。
+- 100.64.0.4：原生 nginx/Windows 1.31.8；`D:\deploy\LearnHouseVideo\`，按用户要求不设置缓存容量上限，实际受 D 盘可用空间限制；连续 90 天未访问的缓存仍会淘汰。只监听 `100.64.0.4:18887`。防火墙和 nginx 仅允许腾讯云 Tailnet IP，另需独立随机请求密钥。未安装 Docker，也未暴露现有共享目录。腾讯云仍保留 3GB 上限和 30 天闲置淘汰。
 - 计划任务 `LearnHouseVideo-Origin` 以 SYSTEM 运行 nginx，配置开机启动和每两分钟重试；正在运行时忽略重复启动。Tailscale 地址尚未出现时启动可能失败，后续自动重试。Windows 整机重启后的恢复尚未实测。
 - 两级缓存都按 URI 和 4MB Range 分片保存，忽略原响应的浏览器缓存指令。它们是受保护的服务器缓存，公网始终先经过原生 RBAC。浏览器收到 `private, no-store`。只缓存 `/api/v1/stream/video/`、`/api/v1/stream/block/`，其他请求直接透传。
 - 文件 UUID 变化会自然产生新缓存；删除、取消发布或收紧权限后，原生 HEAD 校验会阻止访问已有缓存。不要原地覆盖同名视频文件；应使用正常上传生成新 UUID。

@@ -12,7 +12,7 @@ http {
                      '$body_bytes_sent cache=$upstream_cache_status upstream=$upstream_addr';
     access_log logs/access.log video;
     proxy_cache_path D:/deploy/LearnHouseVideo/cache levels=1:2
-        keys_zone=video_origin:8m max_size=30g inactive=90d use_temp_path=off;
+        keys_zone=video_origin:8m inactive=90d use_temp_path=off;
     server {
         listen __ORIGIN_IP__:18887;
         server_name _;
