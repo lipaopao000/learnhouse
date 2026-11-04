@@ -1,0 +1,14 @@
+{
+  "apps/api/src/routers/auth.py": {
+    "original": "8c2fa40ced533df633c97de6b7347642d29cb545dcf15188df6ec27bae09e1d7",
+    "patched": "a7498d10b8afe40e6925970e6c1a24f0d5826ef8d46708042a614bc41eae2ebd"
+  },
+  "apps/api/src/services/users/users.py": {
+    "original": "af1b3cff2f8f5300e3f29e7bd8dd1a7f4bb90c2e93f142e75d93122fe99ab82f",
+    "patched": "c4ffc7946f1b38d56a08a5adb56d037ac6893f7f0b30f6200c81bddc85880f1f"
+  },
+  "apps/api/src/core/email_verification_policy.py": {
+    "original": null,
+    "patched": "901540a69bb9c41e1ffa82bcc197ca0bb77398224d6e6c05f5fb926488aae72f"
+  }
+}

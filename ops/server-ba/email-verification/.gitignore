@@ -1,0 +1,5 @@
+.env
+*.private*
+*.dump
+*.log
+__pycache__/

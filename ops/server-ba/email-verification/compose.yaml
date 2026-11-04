@@ -1,0 +1,161 @@
+{
+  "name": "learnhouse",
+  "services": {
+    "app": {
+      "image": "local/learnhouse:20261105-email-verification-v1",
+      "container_name": "learnhouse-app",
+      "restart": "unless-stopped",
+      "environment": {
+        "LEARNHOUSE_DOMAIN": "${LEARNHOUSE_DOMAIN}",
+        "NEXT_PUBLIC_LEARNHOUSE_API_URL": "${NEXT_PUBLIC_LEARNHOUSE_API_URL}",
+        "NEXT_PUBLIC_LEARNHOUSE_BACKEND_URL": "${NEXT_PUBLIC_LEARNHOUSE_BACKEND_URL}",
+        "NEXT_PUBLIC_LEARNHOUSE_DOMAIN": "${NEXT_PUBLIC_LEARNHOUSE_DOMAIN}",
+        "NEXT_PUBLIC_LEARNHOUSE_TOP_DOMAIN": "${NEXT_PUBLIC_LEARNHOUSE_TOP_DOMAIN}",
+        "NEXT_PUBLIC_LEARNHOUSE_MULTI_ORG": "${NEXT_PUBLIC_LEARNHOUSE_MULTI_ORG}",
+        "NEXT_PUBLIC_LEARNHOUSE_DEFAULT_ORG": "${NEXT_PUBLIC_LEARNHOUSE_DEFAULT_ORG}",
+        "NEXT_PUBLIC_LEARNHOUSE_HTTPS": "${NEXT_PUBLIC_LEARNHOUSE_HTTPS}",
+        "NEXTAUTH_URL": "${NEXTAUTH_URL}",
+        "NEXTAUTH_SECRET": "${NEXTAUTH_SECRET}",
+        "LEARNHOUSE_AUTH_JWT_SECRET_KEY": "${LEARNHOUSE_AUTH_JWT_SECRET_KEY}",
+        "LEARNHOUSE_INITIAL_ADMIN_EMAIL": "${LEARNHOUSE_INITIAL_ADMIN_EMAIL}",
+        "LEARNHOUSE_INITIAL_ADMIN_PASSWORD": "${LEARNHOUSE_INITIAL_ADMIN_PASSWORD}",
+        "LEARNHOUSE_INITIAL_ORG_NAME": "${LEARNHOUSE_INITIAL_ORG_NAME}",
+        "LEARNHOUSE_INITIAL_ORG_SLUG": "${LEARNHOUSE_INITIAL_ORG_SLUG}",
+        "COLLAB_INTERNAL_KEY": "${COLLAB_INTERNAL_KEY}",
+        "LEARNHOUSE_REDIS_URL": "${LEARNHOUSE_REDIS_URL}",
+        "NEXT_PUBLIC_COLLAB_URL": "${NEXT_PUBLIC_COLLAB_URL}",
+        "LEARNHOUSE_REDIS_CONNECTION_STRING": "${LEARNHOUSE_REDIS_CONNECTION_STRING}",
+        "LEARNHOUSE_PORT": "${LEARNHOUSE_PORT}",
+        "LEARNHOUSE_TENANCY": "${LEARNHOUSE_TENANCY}",
+        "LEARNHOUSE_DEVELOPMENT_MODE": "${LEARNHOUSE_DEVELOPMENT_MODE}",
+        "LEARNHOUSE_LOGFIRE_ENABLED": "${LEARNHOUSE_LOGFIRE_ENABLED}",
+        "LEARNHOUSE_IS_AI_ENABLED": "${LEARNHOUSE_IS_AI_ENABLED}",
+        "LEARNHOUSE_CONTENT_DELIVERY_TYPE": "${LEARNHOUSE_CONTENT_DELIVERY_TYPE}",
+        "HOSTNAME": "${HOSTNAME}",
+        "LEARNHOUSE_API_URL": "${LEARNHOUSE_API_URL}",
+        "LEARNHOUSE_INTERNAL_API_URL": "${LEARNHOUSE_INTERNAL_API_URL}",
+        "LEARNHOUSE_SQL_CONNECTION_STRING": "${LEARNHOUSE_SQL_CONNECTION_STRING}",
+        "LEARNHOUSE_SSL": "${LEARNHOUSE_SSL}",
+        "LEARNHOUSE_ALLOWED_ORIGINS": "${LEARNHOUSE_ALLOWED_ORIGINS}",
+        "LEARNHOUSE_FRONTEND_DOMAIN": "${LEARNHOUSE_FRONTEND_DOMAIN}",
+        "LEARNHOUSE_TINYBIRD_API_URL": "${LEARNHOUSE_TINYBIRD_API_URL}",
+        "LEARNHOUSE_TINYBIRD_INGEST_TOKEN": "${LEARNHOUSE_TINYBIRD_INGEST_TOKEN}",
+        "LEARNHOUSE_TINYBIRD_READ_TOKEN": "${LEARNHOUSE_TINYBIRD_READ_TOKEN}",
+        "LEARNHOUSE_EMAIL_PROVIDER": "${LEARNHOUSE_EMAIL_PROVIDER}",
+        "LEARNHOUSE_SMTP_HOST": "${LEARNHOUSE_SMTP_HOST}",
+        "LEARNHOUSE_SMTP_PORT": "${LEARNHOUSE_SMTP_PORT}",
+        "LEARNHOUSE_SMTP_USERNAME": "${LEARNHOUSE_SMTP_USERNAME}",
+        "LEARNHOUSE_SMTP_PASSWORD": "${LEARNHOUSE_SMTP_PASSWORD}",
+        "LEARNHOUSE_SMTP_USE_TLS": "${LEARNHOUSE_SMTP_USE_TLS}",
+        "LEARNHOUSE_SYSTEM_EMAIL_ADDRESS": "${LEARNHOUSE_SYSTEM_EMAIL_ADDRESS}",
+        "LEARNHOUSE_SYSTEM_EMAIL_SENDER_NAME": "${LEARNHOUSE_SYSTEM_EMAIL_SENDER_NAME}",
+        "LEARNHOUSE_REQUIRE_EMAIL_VERIFICATION": "${LEARNHOUSE_REQUIRE_EMAIL_VERIFICATION}",
+        "LEARNHOUSE_EMAIL_VERIFICATION_REQUIRED_SINCE": "${LEARNHOUSE_EMAIL_VERIFICATION_REQUIRED_SINCE}"
+      },
+      "volumes": [
+        "/mnt/d/deploy/LearnHouse/content:/app/api/content"
+      ],
+      "depends_on": {
+        "db": {
+          "condition": "service_healthy"
+        },
+        "redis": {
+          "condition": "service_healthy"
+        }
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost/api/v1/health"
+        ],
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 5,
+        "start_period": "120s"
+      }
+    },
+    "nginx": {
+      "image": "nginx:1.30-alpine",
+      "container_name": "learnhouse-nginx",
+      "restart": "unless-stopped",
+      "ports": [
+        "8806:80"
+      ],
+      "volumes": [
+        "/mnt/d/deploy/LearnHouse/nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro"
+      ],
+      "depends_on": {
+        "app": {
+          "condition": "service_healthy"
+        }
+      },
+      "healthcheck": {
+        "test": [
+          "CMD-SHELL",
+          "wget -q --spider http://127.0.0.1/api/v1/health"
+        ],
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 3
+      }
+    },
+    "db": {
+      "image": "pgvector/pgvector:pg16",
+      "container_name": "learnhouse-db",
+      "restart": "unless-stopped",
+      "environment": {
+        "POSTGRES_USER": "${POSTGRES_USER}",
+        "POSTGRES_PASSWORD": "${POSTGRES_PASSWORD}",
+        "POSTGRES_DB": "${POSTGRES_DB}"
+      },
+      "volumes": [
+        "learnhouse_db_data:/var/lib/postgresql/data"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD-SHELL",
+          "pg_isready -U learnhouse -d learnhouse"
+        ],
+        "interval": "5s",
+        "timeout": "4s",
+        "retries": 10
+      }
+    },
+    "redis": {
+      "image": "redis:7.4-alpine",
+      "container_name": "learnhouse-redis",
+      "restart": "unless-stopped",
+      "command": [
+        "redis-server",
+        "--appendonly",
+        "yes"
+      ],
+      "volumes": [
+        "learnhouse_redis_data:/data"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "redis-cli",
+          "ping"
+        ],
+        "interval": "5s",
+        "timeout": "4s",
+        "retries": 10
+      }
+    }
+  },
+  "volumes": {
+    "learnhouse_content": {
+      "name": "learnhouse_content"
+    },
+    "learnhouse_db_data": {
+      "name": "learnhouse_db_data"
+    },
+    "learnhouse_redis_data": {
+      "name": "learnhouse_redis_data"
+    }
+  }
+}

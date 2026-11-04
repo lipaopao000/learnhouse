@@ -11,6 +11,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from src.core.events.database import get_db_session
 from config.config import get_learnhouse_config
 from src.core.deployment_mode import get_deployment_mode
+from src.core.email_verification_policy import requires_email_verification
 from src.security.auth import (
     authenticate_user,
     get_current_user,
@@ -649,8 +650,8 @@ async def login(
     # disclosing verification state no longer enables enumeration since the
     # caller has proven they control the account.
 
-    # Step 4: Check email verification (required for SaaS login only)
-    if not user.email_verified and get_deployment_mode() == 'saas':
+    # Step 4: Require verification according to the deployment policy
+    if not user.email_verified and requires_email_verification(get_deployment_mode(), user=user):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail={
@@ -1079,9 +1080,9 @@ async def magic_link_request(
     ).scalars().first()
     if user is None:
         return generic
-    # In SaaS mode an unverified account can't log in by password; keep parity so
+    # If verification is required, keep password and magic-link behavior aligned so
     # a magic link can't be a verification-bypass side channel.
-    if not user.email_verified and get_deployment_mode() == "saas":
+    if not user.email_verified and requires_email_verification(get_deployment_mode(), user=user):
         return generic
 
     # The org's host and branding are only for its members; anyone else gets

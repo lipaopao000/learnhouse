@@ -1,0 +1,16 @@
+{
+  "public_signup": true,
+  "registration_sends_verification_mail": true,
+  "unverified_login_blocked_api_and_web_proxy": true,
+  "verification_resend": true,
+  "invalid_token_rejected": true,
+  "valid_token_verified_email": true,
+  "verification_auto_signin_cookie": true,
+  "verification_token_single_use": true,
+  "verified_password_login": true,
+  "existing_administrator_login": true,
+  "verification_token_ttl_max_seconds": 3600,
+  "disposable_test_account_removed": true,
+  "mail_recipient": "noreply@toofun.fun",
+  "inbox_delivery_confirmed": false
+}

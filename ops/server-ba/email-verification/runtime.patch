@@ -1,0 +1,83 @@
+--- a/apps/api/src/routers/auth.py
++++ b/apps/api/src/routers/auth.py
+@@ -11,6 +11,7 @@
+ from src.core.events.database import get_db_session
+ from config.config import get_learnhouse_config
+ from src.core.deployment_mode import get_deployment_mode
++from src.core.email_verification_policy import requires_email_verification
+ from src.security.auth import (
+     authenticate_user,
+     get_current_user,
+@@ -649,8 +650,8 @@
+     # disclosing verification state no longer enables enumeration since the
+     # caller has proven they control the account.
+ 
+-    # Step 4: Check email verification (required for SaaS login only)
+-    if not user.email_verified and get_deployment_mode() == 'saas':
++    # Step 4: Require verification according to the deployment policy
++    if not user.email_verified and requires_email_verification(get_deployment_mode(), user=user):
+         raise HTTPException(
+             status_code=status.HTTP_403_FORBIDDEN,
+             detail={
+@@ -1079,9 +1080,9 @@
+     ).scalars().first()
+     if user is None:
+         return generic
+-    # In SaaS mode an unverified account can't log in by password; keep parity so
++    # If verification is required, keep password and magic-link behavior aligned so
+     # a magic link can't be a verification-bypass side channel.
+-    if not user.email_verified and get_deployment_mode() == "saas":
++    if not user.email_verified and requires_email_verification(get_deployment_mode(), user=user):
+         return generic
+ 
+     # The org's host and branding are only for its members; anyone else gets
+--- a/apps/api/src/services/users/users.py
++++ b/apps/api/src/services/users/users.py
+@@ -15,6 +15,7 @@
+     increase_feature_usage,
+ )
+ from src.core.deployment_mode import get_deployment_mode
++from src.core.email_verification_policy import requires_email_verification
+ from src.services.users.usergroups import add_users_to_usergroup
+ from src.services.users.emails import (
+     send_account_creation_email,
+@@ -215,8 +216,8 @@
+     user.user_uuid = f"user_{uuid4()}"
+     user.password = security_hash_password(user_object.password) if user_object.password else ""
+ 
+-    # OAuth users and OSS mode get auto-verified email
+-    if is_oauth or get_deployment_mode() != 'saas':
++    # OAuth users and deployments without verification auto-verify email
++    if is_oauth or not requires_email_verification(get_deployment_mode()):
+         user.email_verified = True
+         user.email_verified_at = datetime.now(timezone.utc).isoformat()
+         user.signup_method = signup_provider if is_oauth else "email"
+@@ -344,7 +345,7 @@
+             org_name=org.name if org else None,
+             **resolve_org_email_branding(org, org_config, request).as_kwargs(),
+         )
+-    elif get_deployment_mode() == 'saas':
++    elif requires_email_verification(get_deployment_mode()):
+         # Import here to avoid circular imports
+         from src.services.users.email_verification import send_verification_email
+         await send_verification_email(request, db_session, user, org_id)
+@@ -465,8 +466,8 @@
+     user.user_uuid = f"user_{uuid4()}"
+     user.password = security_hash_password(user_object.password) if user_object.password else ""
+ 
+-    # OAuth users and OSS mode get auto-verified email
+-    if is_oauth or get_deployment_mode() != 'saas':
++    # OAuth users and deployments without verification auto-verify email
++    if is_oauth or not requires_email_verification(get_deployment_mode()):
+         user.email_verified = True
+         user.email_verified_at = datetime.now(timezone.utc).isoformat()
+         user.signup_method = signup_provider if is_oauth else "email"
+@@ -521,7 +522,7 @@
+ 
+     # OAuth users get welcome email (already verified)
+     # Non-OAuth SaaS users get verification email (no org needed)
+-    if is_oauth or get_deployment_mode() != 'saas':
++    if is_oauth or not requires_email_verification(get_deployment_mode()):
+         send_account_creation_email(
+             user=user_read,
+             email=user_read.email,
