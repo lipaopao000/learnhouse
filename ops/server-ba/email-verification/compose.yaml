@@ -2,7 +2,7 @@
   "name": "learnhouse",
   "services": {
     "app": {
-      "image": "local/learnhouse:20261105-email-verification-v1",
+      "image": "local/learnhouse:20261105-email-verification-v2",
       "container_name": "learnhouse-app",
       "restart": "unless-stopped",
       "environment": {
@@ -50,7 +50,8 @@
         "LEARNHOUSE_SYSTEM_EMAIL_ADDRESS": "${LEARNHOUSE_SYSTEM_EMAIL_ADDRESS}",
         "LEARNHOUSE_SYSTEM_EMAIL_SENDER_NAME": "${LEARNHOUSE_SYSTEM_EMAIL_SENDER_NAME}",
         "LEARNHOUSE_REQUIRE_EMAIL_VERIFICATION": "${LEARNHOUSE_REQUIRE_EMAIL_VERIFICATION}",
-        "LEARNHOUSE_EMAIL_VERIFICATION_REQUIRED_SINCE": "${LEARNHOUSE_EMAIL_VERIFICATION_REQUIRED_SINCE}"
+        "LEARNHOUSE_EMAIL_VERIFICATION_REQUIRED_SINCE": "${LEARNHOUSE_EMAIL_VERIFICATION_REQUIRED_SINCE}",
+        "LEARNHOUSE_MEDIA_URL": "${LEARNHOUSE_MEDIA_URL}"
       },
       "volumes": [
         "/mnt/d/deploy/LearnHouse/content:/app/api/content"
