@@ -10,5 +10,9 @@
   "apps/api/src/core/email_verification_policy.py": {
     "original": null,
     "patched": "901540a69bb9c41e1ffa82bcc197ca0bb77398224d6e6c05f5fb926488aae72f"
+  },
+  "apps/api/src/services/email/utils.py": {
+    "original": "812c2acae2f57858207f896c299d422d3e2066f766c1408895786e8f1ecebe3d",
+    "patched": "af582393c54a8a193a99a3b1b0ca0b4dbd7c684de302626553517b00ca51210c"
   }
 }

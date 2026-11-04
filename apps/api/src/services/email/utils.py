@@ -6,6 +6,7 @@ import ssl
 import time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.utils import formatdate, make_msgid
 from typing import Optional
 from urllib.parse import urlparse
 
@@ -702,6 +703,13 @@ def _send_email_smtp(
     msg["Subject"] = subject
     for header_name, header_value in (headers or {}).items():
         msg[header_name] = header_value
+    # Set these at the origin instead of relying on SMTP relays to invent or
+    # repair them. Gmail can flag a relay-generated malformed Message-ID.
+    if "Date" not in msg:
+        msg["Date"] = formatdate(usegmt=True)
+    if "Message-ID" not in msg:
+        sender_domain = str(mailing.system_email_address).rsplit("@", 1)[-1]
+        msg["Message-ID"] = make_msgid(domain=sender_domain)
     msg.attach(MIMEText(body, "html"))
 
     server = None

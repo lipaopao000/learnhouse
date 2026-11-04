@@ -8,6 +8,7 @@ LearnHouse 自托管实例可通过独立开关要求新注册账号验证邮箱
 - `LEARNHOUSE_EMAIL_VERIFICATION_REQUIRED_SINCE`：UTC ISO 时间。仅该时间及之后创建的账号要求验证，保留已有管理员的登录能力；不会把旧账号标记为已经验证。
 - SaaS 原有行为保持不变；OAuth 已验证账号继续沿用原有流程。
 - 验证令牌有效期一小时。验证后按原有规则签发会话，原有 MFA 检查保留。
+- SMTP 邮件在源头生成符合格式要求的 `Date` 和唯一 `Message-ID`；显式提供的同名邮件头继续保留且不重复添加。
 
 ## 当前部署
 
@@ -16,7 +17,8 @@ LearnHouse 自托管实例可通过独立开关要求新注册账号验证邮箱
 - 网站：`https://syyedu.toofun.fun`。
 - 发信地址：`noreply@toofun.fun`；腾讯企业邮 SMTP，`smtp.exmail.qq.com:465`，TLS。
 - 内容挂载：`D:\deploy\LearnHouse\content` → `/app/api/content`。
-- 镜像：`local/learnhouse:20261105-email-verification-v1`。
+- 镜像：`local/learnhouse:20261105-email-verification-v2`。
+- 邮件媒体地址：`LEARNHOUSE_MEDIA_URL=https://syyedu.toofun.fun`，复用网站可访问的 `/content`，避免默认推测出的 `api.` 子域名。
 
 SMTP 密码、JWT、数据库连接和 Portainer 凭据留在部署目录的私有配置中。Git 中只记录源码、无密钥的 Compose 模板和部署工具。`compose.yaml` 的环境变量需要由 Portainer Stack 环境变量提供。
 
@@ -36,7 +38,7 @@ SMTP 密码、JWT、数据库连接和 Portainer 凭据留在部署目录的私�
 
 ## 构建
 
-当前运行的官方镜像与 Git 基线在部分无关接口上存在版本差异。`build.py` 从准确的官方镜像摘要提取两个目标文件，核对 SHA-256，再应用 `runtime.patch` 并复制策略模块，避免顺带升级其他接口。构建需要 Python 3、Git 和 Docker；无需发信凭据。
+当前运行的官方镜像与 Git 基线在部分无关接口上存在版本差异。`build.py` 从准确的官方镜像摘要提取三个目标文件，核对 SHA-256，再应用 `runtime.patch` 并复制策略模块，避免顺带升级其他接口。构建需要 Python 3、Git 和 Docker；无需发信凭据。
 
 在服务器上的本仓库根目录执行：
 
@@ -60,11 +62,15 @@ python3 ops/server-ba/email-verification/deploy.py --deployment-dir /Users/svipb
 python3 ops/server-ba/email-verification/rollback.py --deployment-dir /Users/svipba/Documents/Codex/2026-11-04/learnhouse-deploy
 ```
 
-首次启用前，数据库备份及 Stack 快照保存在部署目录 `email-verification/`。回退恢复之前的镜像、Compose 和环境变量；本变更无数据库结构迁移。新建未验证账号在回退后会恢复官方自托管版本原有的登录行为。
+首次启用前，数据库备份及 Stack 快照保存在部署目录 `email-verification/`。v2 的升级快照单独保存在 `email-verification/releases/20261105-email-verification-v2/`，上面的回退命令恢复到 v1，并保留最初的快照。升级不会重设已有的注册验证启用时间。本变更无数据库结构迁移；若恢复到最初的官方自托管镜像，新建未验证账号会恢复官方版本原有的登录行为。
 
 ## 验证
 
 本次在无网络隔离容器中运行注册、验证服务和认证相关测试：原有相关测试 93 项及新增策略测试 14 项通过。原有测试夹具有 18 条异步调用警告。
+
+SMTP 格式回归测试检查实际传给 SMTP 的邮件序列化结果，包括 465/587 两种传输模式下的合法时间和 Message-ID、跨邮件的唯一标识，以及调用方邮件头不被重复添加。
+
+v2 在隔离容器中运行邮件格式、SMTP TLS、发信工具、验证服务和自托管策略相关测试，共 126 项通过。该修复纠正可复现的邮件格式和媒体 URL 问题，不保证收件服务一定将邮件放入收件箱；投递位置仍需实际收件验证。
 
 线上通过实际 `/api/signup` 和 `/api/auth/*` 路径检查：注册账号保持未验证、注册发信、验证邮件重发、未验证登录拒绝、错误令牌拒绝、有效令牌验证、Cookie 自动登录、令牌不可重复使用、验证后密码登录、旧管理员登录。测试仅向自己的发信邮箱投递，测试账号已删除。SMTP 接受邮件不等于已确认收件箱投递。
 

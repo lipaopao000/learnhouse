@@ -10,7 +10,8 @@ ROOT = parser.parse_args().deployment_dir.resolve()
 sys.path.insert(0, str(ROOT))
 from portainer import request
 
-DIR = ROOT / 'email-verification'
+DIR = ROOT / 'email-verification/releases/20261105-email-verification-v2'
+DIR.mkdir(parents=True, exist_ok=True)
 
 def save(path, value):
     path.write_text(value)
@@ -19,16 +20,18 @@ def save(path, value):
 stack = request('/api/stacks/17')
 original = request('/api/stacks/17/file')['StackFileContent']
 assert stack['Status'] == 1
+assert not (DIR / 'stack-before.private.json').exists(), 'Release snapshot already exists; review the current state before redeploying'
 save(DIR / 'stack-before.private.json', json.dumps(stack, ensure_ascii=False, indent=2))
 save(DIR / 'compose-before.private.json', json.dumps({'StackFileContent': original}, ensure_ascii=False, indent=2))
 compose = json.loads(original)
-assert compose['services']['app']['image'] == 'ghcr.io/learnhouse/app:latest'
-compose['services']['app']['image'] = 'local/learnhouse:20261105-email-verification-v1'
+assert compose['services']['app']['image'] in {'ghcr.io/learnhouse/app:latest', 'local/learnhouse:20261105-email-verification-v1'}
+compose['services']['app']['image'] = 'local/learnhouse:20261105-email-verification-v2'
+env = {item['name']: item['value'] for item in stack['Env']}
 settings = {
     'LEARNHOUSE_REQUIRE_EMAIL_VERIFICATION': 'true',
-    'LEARNHOUSE_EMAIL_VERIFICATION_REQUIRED_SINCE': datetime.now(timezone.utc).isoformat(),
+    'LEARNHOUSE_EMAIL_VERIFICATION_REQUIRED_SINCE': env.get('LEARNHOUSE_EMAIL_VERIFICATION_REQUIRED_SINCE') or datetime.now(timezone.utc).isoformat(),
+    'LEARNHOUSE_MEDIA_URL': 'https://syyedu.toofun.fun',
 }
-env = {item['name']: item['value'] for item in stack['Env']}
 env.update(settings)
 for key in settings:
     compose['services']['app']['environment'][key] = '${' + key + '}'

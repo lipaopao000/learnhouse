@@ -10,7 +10,7 @@ ROOT = parser.parse_args().deployment_dir.resolve()
 sys.path.insert(0, str(ROOT))
 from portainer import request
 
-HERE = ROOT / 'email-verification'
+HERE = ROOT / 'email-verification/releases/20261105-email-verification-v2'
 stack = json.loads((HERE / 'stack-before.private.json').read_text())
 compose = json.loads((HERE / 'compose-before.private.json').read_text())['StackFileContent']
 payload = {'StackFileContent': compose, 'Env': stack['Env'], 'Prune': False, 'PullImage': False}

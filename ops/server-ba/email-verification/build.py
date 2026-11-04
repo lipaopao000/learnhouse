@@ -10,7 +10,7 @@ import tempfile
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 BASE = 'ghcr.io/learnhouse/app@sha256:9dd05e16fe1aecf5b668dc4d415c38bf1fd20274a927b50bc51a98388b3639bb'
-TAG = 'local/learnhouse:20261105-email-verification-v1'
+TAG = 'local/learnhouse:20261105-email-verification-v2'
 
 
 def run(*args, **kwargs):
