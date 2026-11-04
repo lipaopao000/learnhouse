@@ -20,6 +20,20 @@ LearnHouse 自托管实例可通过独立开关要求新注册账号验证邮箱
 
 SMTP 密码、JWT、数据库连接和 Portainer 凭据留在部署目录的私有配置中。Git 中只记录源码、无密钥的 Compose 模板和部署工具。`compose.yaml` 的环境变量需要由 Portainer Stack 环境变量提供。
 
+## 发信域名认证
+
+腾讯企业邮的收信 MX 记录只解决收信路由。发往 Gmail 等外部邮箱前，需要在域名的公网 DNS 中配置发信认证。当前腾讯企业邮 SPF 记录为：
+
+| 域名 | 主机记录 | 类型 | 线路 | 记录值 |
+| --- | --- | --- | --- | --- |
+| `toofun.fun` | `@` | `TXT` | 默认 | `v=spf1 include:spf.mail.qq.com ~all` |
+
+保留现有 MX 记录；同一个域名只维护一条 `v=spf1` 策略。若以后增加其他发信服务，应合并授权来源，避免添加相互冲突的多条 SPF。DKIM 的选择器和公钥以腾讯企业邮管理后台给出的域名配置为准。
+
+保存 DNS 后先查询公网 TXT，确认 SPF 已生效，再通过注册页或登录页重发验证邮件。若 Gmail 仍收不到，检查垃圾邮件、发件邮箱中的退信及服务商投递日志。腾讯 SMTP 接受邮件、注册接口返回成功和 Gmail 收件箱实际收到邮件是不同的验收步骤。
+
+参考：[DNSPod TXT 设置](https://docs.dnspod.cn/dns/help-txt/)、[腾讯 SPF 示例](https://intl.cloud.tencent.com/document/product/1097/44886)、[Gmail 发件人要求](https://support.google.com/mail/answer/81126?hl=zh-Hans)。
+
 ## 构建
 
 当前运行的官方镜像与 Git 基线在部分无关接口上存在版本差异。`build.py` 从准确的官方镜像摘要提取两个目标文件，核对 SHA-256，再应用 `runtime.patch` 并复制策略模块，避免顺带升级其他接口。构建需要 Python 3、Git 和 Docker；无需发信凭据。
