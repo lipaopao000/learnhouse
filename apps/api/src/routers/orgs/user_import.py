@@ -27,6 +27,7 @@ from src.db.usergroups import UserGroup
 from src.db.user_organizations import UserOrganization
 from src.db.users import AnonymousUser, APITokenUser, SuperadminAPITokenUser, User
 from src.security.auth import get_current_user
+from src.security.account_identity import enabled as username_accounts_enabled
 from src.security.org_auth import is_org_admin, require_org_role_permission
 from src.security.security import security_hash_password
 from src.security.features_utils.usage import (
@@ -77,13 +78,16 @@ class ExecuteBody(BaseModel):
 
 def normalize(row: ImportRow):
     errors = []
-    try:
-        email = str(EMAIL.validate_python(row.email.strip())).lower()
-    except ValidationError:
-        email = row.email.strip().lower()
-        errors.append('邮箱格式不正确')
+    email = row.email.strip().lower()
+    if email or not username_accounts_enabled():
+        try:
+            email = str(EMAIL.validate_python(email)).lower()
+        except ValidationError:
+            errors.append('邮箱格式不正确')
     name = row.name.strip()
-    username = row.username.strip() or 'icu_' + hashlib.sha256(email.encode()).hexdigest()[:12]
+    username = row.username.strip() or ('icu_' + hashlib.sha256(email.encode()).hexdigest()[:12] if email else '')
+    if not username:
+        errors.append('未填写邮箱时必须填写用户名')
     role = ROLE_IDS.get(row.role.strip().lower())
     if not name:
         errors.append('姓名不能为空')
@@ -129,7 +133,7 @@ async def prepare(rows, org_id, db, import_id=None, actor_id=None):
         item['row'] = index
         item['status'] = 'ready'
         item['group_ids'] = []
-        if item['email'] in seen_emails:
+        if item['email'] and item['email'] in seen_emails:
             item['errors'].append('表格内邮箱重复')
         if item['username'] in seen_names:
             item['errors'].append('表格内用户名重复')
@@ -141,7 +145,16 @@ async def prepare(rows, org_id, db, import_id=None, actor_id=None):
                 item['errors'].append('分组不存在或重名：' + name)
             else:
                 item['group_ids'].append(choices[0])
-        existing = (await db.execute(select(User).where(func.lower(User.email) == item['email']))).scalars().first()
+        existing = None
+        if item['email']:
+            existing = (await db.execute(select(User).where(func.lower(User.email) == item['email']))).scalars().first()
+        by_name = (await db.execute(select(User).where(User.username == item['username']))).scalars().first()
+        if by_name and existing and by_name.id != existing.id:
+            item['errors'].append('用户名与邮箱属于不同账号')
+        if not existing and by_name:
+            if item['email'] and item['email'] != by_name.email.lower():
+                item['errors'].append('用户名已被其他邮箱账号使用')
+            existing = by_name
         if existing:
             member = (await db.execute(select(UserOrganization).where(
                 UserOrganization.org_id == org_id, UserOrganization.user_id == existing.id))).scalars().first()
@@ -153,8 +166,6 @@ async def prepare(rows, org_id, db, import_id=None, actor_id=None):
                 item['username'] = existing.username
             else:
                 item['errors'].append('邮箱已有其他账号，请使用邀请加入，不能覆盖账号')
-        elif (await db.execute(select(User.id).where(User.username == item['username']))).scalars().first():
-            item['errors'].append('用户名已被使用')
         if item['errors']:
             item['status'] = 'error'
         result.append(item)
@@ -172,7 +183,9 @@ async def metadata(org_id: int, response: Response, request: Request,
     response.headers['Cache-Control'] = 'no-store'
     groups = (await db.execute(select(UserGroup.name).where(UserGroup.org_id == org_id))).scalars().all()
     return {'roles': ['学员', '讲师'], 'groups': sorted(groups), 'max_preview_rows': 500,
-        'batch_size': 25, 'login_uses_email': True, 'sends_email': False, 'force_password_change': False}
+        'batch_size': 25, 'login_uses_email': not username_accounts_enabled(),
+        'supports_username_login': username_accounts_enabled(), 'email_optional': username_accounts_enabled(),
+        'sends_email': False, 'force_password_change': False}
 
 
 @router.post('/{org_id}/users/import/preview')
@@ -220,8 +233,8 @@ async def create(org_id: int, body: ExecuteBody, response: Response, request: Re
                 now = datetime.now(timezone.utc).replace(tzinfo=None, microsecond=0)
                 password_hash = await run_in_threadpool(security_hash_password, password)
                 user = User(username=row['username'], first_name=row['name'], last_name='', email=row['email'],
-                    password=password_hash, user_uuid='user_'+str(uuid4()), email_verified=True,
-                    email_verified_at=now.isoformat(), signup_method='admin_import', is_superadmin=False,
+                    password=password_hash, user_uuid='user_'+str(uuid4()), email_verified=bool(row['email']),
+                    email_verified_at=now.isoformat() if row['email'] else None, signup_method='admin_import', is_superadmin=False,
                     password_changed_at=now, creation_date=str(now), update_date=str(now),
                     extra_metadata={'admin_import': {'actor_id': actor.id, 'import_id': str(body.import_id), 'created_at': now.isoformat()}})
                 db.add(user)

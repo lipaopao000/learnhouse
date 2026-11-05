@@ -468,3 +468,6 @@ v1_router.include_router(
     tags=["stream"],
     dependencies=[Depends(get_non_api_token_user)]
 )
+
+from src.routers.account_access import router as account_access_router
+v1_router.include_router(account_access_router, prefix="/account-access", tags=["account-access"])

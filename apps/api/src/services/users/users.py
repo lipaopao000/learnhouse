@@ -1,3 +1,4 @@
+from src.security.account_identity import identity_query
 import json
 import logging
 import os
@@ -563,6 +564,8 @@ async def update_user(
     # EmailStr lowercases the domain, so a form that re-sends the stored
     # address can differ from it in case alone; that is not a change.
     email_changed = (user_object.email or "").strip().lower() != (user.email or "").strip().lower()
+    if email_changed and not user_object.email:
+        raise HTTPException(400, "A bound email cannot be cleared through profile editing")
     identity_changed = email_changed or user_object.username != user.username
     if identity_changed and not is_owner and not acting_superadmin:
         raise HTTPException(
@@ -595,7 +598,7 @@ async def update_user(
         select(User).where(
             (
                 (User.username == user_object.username)
-                | (func.lower(User.email) == str(user_object.email).lower())
+                | ((func.lower(User.email) == str(user_object.email).lower()) if user_object.email else False)
             )
             & (User.id != user.id)
         )
@@ -1221,7 +1224,7 @@ async def delete_user_by_id(
 # Utils & Security functions
 
 
-async def security_get_user(request: Request, db_session: AsyncSession, email: str) -> User | None:
+async def security_get_user(request: Request, db_session: AsyncSession, email: str, *, allow_username=False) -> User | None:
     """
     Get user by email for security/authentication purposes.
 
@@ -1230,7 +1233,7 @@ async def security_get_user(request: Request, db_session: AsyncSession, email: s
     and prevent email enumeration vulnerabilities.
     """
     # Check if user exists
-    statement = select(User).where(User.email == email)
+    statement = identity_query(email, allow_username=allow_username)
     user = (await db_session.execute(statement)).scalars().first()
 
     if not user:

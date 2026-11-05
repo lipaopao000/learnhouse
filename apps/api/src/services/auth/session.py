@@ -14,6 +14,7 @@ verification endpoint, which decodes it explicitly.
 """
 
 import secrets
+from src.security.account_identity import subject_for_user
 from dataclasses import dataclass
 from datetime import timedelta
 from typing import Optional
@@ -163,6 +164,6 @@ async def issue_session_or_challenge(
     if await is_mfa_active(db_session, user.id):
         return SessionIssueResult(
             mfa_required=True,
-            mfa_token=create_mfa_pending_token(user.email, amr, org_id, custom_domain),
+            mfa_token=create_mfa_pending_token(subject_for_user(user), amr, org_id, custom_domain),
         )
-    return mint_session_tokens(user.email, amr, org_id, custom_domain)
+    return mint_session_tokens(subject_for_user(user), amr, org_id, custom_domain)

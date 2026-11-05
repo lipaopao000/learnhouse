@@ -1,3 +1,5 @@
+from src.security.account_identity import identity_query, subject_for_user, credentials_match_epoch
+from src.security.auth import decode_jwt
 """Two-factor authentication: enrollment, management and the login challenge.
 
 Mounted under ``/api/v1/auth`` alongside the main auth router. The login
@@ -144,7 +146,7 @@ def _rotate_sessions(request: Request, response: Response, user: User) -> dict:
         pass
     # Same claims a refresh would carry, so the reissue can't launder the
     # session's method, org binding or legacy grace deadline.
-    data = {"sub": user.email, "purpose": "session", **carry_session_claims(payload)}
+    data = {"sub": subject_for_user(user), "purpose": "session", **carry_session_claims(payload)}
     access_token = create_access_token(data=data)
     refresh_token = create_refresh_token(data=data)
     set_auth_cookies(response, access_token, refresh_token, request)
@@ -268,7 +270,7 @@ async def api_mfa_setup(
 
     return {
         "secret": secret,
-        "provisioning_uri": build_provisioning_uri(secret, user.email),
+        "provisioning_uri": build_provisioning_uri(secret, user.email or user.username),
     }
 
 
@@ -475,7 +477,7 @@ async def api_login_mfa(
     pending_custom_domain = decode_mfa_pending_custom_domain(form.mfa_token)
 
     user = (
-        await db_session.execute(select(User).where(User.email == email))
+        await db_session.execute(identity_query(email))
     ).scalars().first()
     if user is None:  # pragma: no cover - defensive: pending token only issued for a real user
         raise HTTPException(
@@ -483,13 +485,15 @@ async def api_login_mfa(
             detail={"code": "MFA_SESSION_EXPIRED", "message": "Please sign in again."},
         )
 
+    if not credentials_match_epoch(user, decode_jwt(form.mfa_token) or {}):
+        raise HTTPException(401, "Password changed; please sign in again")
     mfa = await get_user_mfa(db_session, user.id)
     if mfa is None or mfa.confirmed_at is None:
         # The factor was removed between password step and code step. Nothing
         # left to verify, so fall through to a normal session rather than
         # stranding the user at a challenge they can never satisfy.
         result = mint_session_tokens(
-            user.email, pending_amr, pending_org_id, pending_custom_domain
+            subject_for_user(user), pending_amr, pending_org_id, pending_custom_domain
         )
     else:
         accepted = False
@@ -516,7 +520,7 @@ async def api_login_mfa(
             )
 
         result = mint_session_tokens(
-            user.email, pending_amr, pending_org_id, pending_custom_domain
+            subject_for_user(user), pending_amr, pending_org_id, pending_custom_domain
         )
 
     # One pending token, one session: replaying it with another valid code

@@ -1,3 +1,4 @@
+from src.security.account_identity import identity_query
 import contextlib
 import logging
 from datetime import timedelta, datetime, timezone
@@ -628,7 +629,7 @@ async def login(
         # Unknown user OR wrong password: responses are indistinguishable.
         # The row lookup below runs behind that wall for lockout bookkeeping.
         user_record = (await db_session.execute(
-            select(User).where(User.email == username)
+            identity_query(username, allow_username=True)
         )).scalars().first()
         if user_record:
             await record_failed_login(

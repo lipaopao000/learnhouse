@@ -59,7 +59,7 @@ def test_retry_and_existing_users(monkeypatch):
     batch='b70659d5-26b1-46c3-a079-9dcb44f6dfef'
     user=SimpleNamespace(id=9, username='existing',extra_metadata={'admin_import':{'actor_id':1,'import_id':batch}})
     class DB:
-        def __init__(self):self.items=iter([[],user,object()])
+        def __init__(self):self.items=iter([[],user,None,object()])
         async def execute(self,query):return Result(next(self.items))
     row=module.ImportRow(name='医生',email='doctor@example.com')
     recovered=asyncio.run(module.prepare([row],1,DB(),batch,1))[0]

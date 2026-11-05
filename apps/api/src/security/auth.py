@@ -158,7 +158,7 @@ async def authenticate_user(
     password: str,
     db_session: AsyncSession,
 ) -> User | bool:
-    user = await security_get_user(request, db_session, email)
+    user = await security_get_user(request, db_session, email, allow_username=True)
     if not user:
         # SECURITY: run a real password-verify against a dummy hash so
         # unknown-user responses take roughly the same time as known-user

@@ -545,6 +545,9 @@ def send_email(
     from fastapi import HTTPException
     from src.services.email.safe_text import header_safe
 
+    if not to:
+        return False  # Administrator-created accounts may have no mailbox.
+
     # Subjects interpolate org/user names; a line break there is header injection.
     subject = header_safe(subject)
 

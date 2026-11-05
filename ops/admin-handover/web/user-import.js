@@ -30,7 +30,7 @@ function parsePeople(text){
  const matrix=csvParse(text);if(matrix.length<2)throw new Error('表格没有人员数据');
  const aliases={姓名:'name',name:'name',邮箱:'email',email:'email',用户名:'username',username:'username',角色:'role',role:'role',分组:'groups',groups:'groups'};
  const headers=matrix[0].map(v=>aliases[v.trim().toLowerCase()]);
- for(const required of ['name','email'])if(!headers.includes(required))throw new Error('缺少“姓名”或“邮箱”表头');
+ if(!headers.includes('name')||(!headers.includes('email')&&!headers.includes('username')))throw new Error('需要“姓名”，以及“用户名”或“邮箱”表头');
  if(new Set(headers.filter(Boolean)).size!==headers.filter(Boolean).length)throw new Error('表头重复');
  if(matrix.length-1>500)throw new Error('每次最多导入 500 人，请拆分文件');
  return matrix.slice(1).map((cells,index)=>{
@@ -68,25 +68,45 @@ $('preview').addEventListener('click',async()=>{setBusy(true);try{const data=awa
 $('confirm').addEventListener('change',updateCreate);
 async function execute(){
  setBusy(true);$('delivery').hidden=false;$('retry').hidden=true;
- const pending=checkedRows.filter(r=>r.status==='ready'&&!['created','recovered','existing'].includes(outcomes.get(r.email)?.status));
- for(const r of pending)if(!passwords.has(r.email))passwords.set(r.email,randomPassword());
+ const pending=checkedRows.filter(r=>r.status==='ready'&&!['created','recovered','existing'].includes(outcomes.get(r.username)?.status));
+ for(const r of pending)if(!passwords.has(r.username))passwords.set(r.username,randomPassword());
  try{
   for(let i=0;i<pending.length;i+=25){
    message('正在创建 '+Math.min(i+25,pending.length)+' / '+pending.length+'，请保持页面打开…');
-   const chunk=pending.slice(i,i+25).map(r=>({name:r.name,email:r.email,username:r.username,role:r.role,groups:r.groups,password:passwords.get(r.email)}));
+   const chunk=pending.slice(i,i+25).map(r=>({name:r.name,email:r.email,username:r.username,role:r.role,groups:r.groups,password:passwords.get(r.username)}));
    const data=await api('/orgs/'+orgId+'/users/import/create',{import_id:importId,confirmed:true,rows:chunk});
-   for(const result of data.rows)outcomes.set(result.email,result);
+   for(const result of data.rows)outcomes.set(result.username,result);
    if(data.rows.some(r=>r.status==='error'))throw new Error('部分账号未创建，请查看结果。已完成的账号可立即下载。');
   }
   message('导入完成，请立即下载账号与初始密码交付表。');
  }catch(e){message(e.message+' 如网络中断，可在当前页面重试；已创建账号不会重置密码。',true);$('retry').hidden=false;}
  finally{
-  const final=checkedRows.map(r=>outcomes.has(r.email)?{...outcomes.get(r.email),row:r.row}:r);renderRows(final);
+  const final=checkedRows.map(r=>outcomes.has(r.username)?{...outcomes.get(r.username),row:r.row}:r);renderRows(final);
   const completed=Array.from(outcomes.values()).filter(r=>['created','recovered'].includes(r.status));
   $('result').textContent='本次成功创建 '+completed.length+' 人。已有账号不包含在密码交付表中。';$('download').disabled=!completed.length;setBusy(false);$('create').disabled=true;
  }
 }
 $('create').addEventListener('click',execute);$('retry').addEventListener('click',execute);
-$('download').addEventListener('click',()=>{const rows=Array.from(outcomes.values()).filter(r=>['created','recovered'].includes(r.status));downloadCsv('ICU账号交付-'+new Date().toISOString().slice(0,10)+'.csv',[['姓名','邮箱','用户名','角色','分组','初始密码'],...rows.map(r=>[r.name,r.email,r.username,r.role,r.groups.join(';'),passwords.get(r.email)])]);});
+$('download').addEventListener('click',()=>{const rows=Array.from(outcomes.values()).filter(r=>['created','recovered'].includes(r.status));downloadCsv('ICU账号交付-'+new Date().toISOString().slice(0,10)+'.csv',[['姓名','邮箱','用户名','角色','分组','初始密码'],...rows.map(r=>[r.name,r.email,r.username,r.role,r.groups.join(';'),passwords.get(r.username)])]);});
 window.addEventListener('beforeunload',event=>{if(passwords.size){event.preventDefault();event.returnValue='';}});
 (async()=>{try{const org=await api('/orgs/slug/default');orgId=org.id;const meta=await api('/orgs/'+orgId+'/users/import/meta');$('groups').textContent=meta.groups.join('、');$('access').hidden=true;$('workspace').hidden=false;}catch(e){$('access').textContent=e.status===401?'请先登录管理员账号。':e.message;if(e.status===401){const a=document.createElement('a');a.href='/login?callbackUrl=%2Fdash%2Fusers%2Fimport';a.textContent=' 前往登录';$('access').append(a);}}})();
+let lastReset;
+$('reset-search').addEventListener('submit',async event=>{
+ event.preventDefault();$('reset-status').textContent='正在查找…';
+ try{const data=await api('/account-access/orgs/'+orgId+'/search?q='+encodeURIComponent($('reset-query').value.trim()));$('reset-users').replaceChildren();
+ for(const user of data.users){const div=document.createElement('div');div.className='user-choice';const p=document.createElement('p');p.textContent=user.name+' · '+user.username+' · '+(user.email||'未绑定邮箱');const button=document.createElement('button');button.type='button';button.textContent='重置此人密码';button.addEventListener('click',()=>resetOne(user,button));div.append(p,button);$('reset-users').append(div);}
+ $('reset-status').textContent=data.users.length?'请选择并核实本人身份，再输入管理员自己的密码。':'未找到匹配用户。';
+ }catch(e){$('reset-status').textContent=e.message;}
+});
+async function resetOne(user,button){
+ const adminPassword=$('admin-password').value;
+ if(!adminPassword){$('reset-status').textContent='请先输入管理员自己的当前密码。';$('admin-password').focus();return;}
+ if(!confirm('确认已核实 '+user.name+'（'+user.username+'）的身份并重置密码？其旧登录将失效。'))return;
+ if(!lastReset||lastReset.user.id!==user.id||lastReset.completed)lastReset={user,password:randomPassword(),operation_id:crypto.randomUUID(),completed:false};
+ button.disabled=true;
+ try{await api('/account-access/orgs/'+orgId+'/users/'+user.id+'/reset-password',{admin_password:adminPassword,new_password:lastReset.password,operation_id:lastReset.operation_id,confirmed:true});lastReset.completed=true;$('admin-password').value='';$('reset-status').textContent='密码已重置，旧登录已结束。请立即下载新密码并单独交给本人。';$('reset-download').hidden=false;}
+ catch(e){$('reset-status').textContent=e.message+' 若网络中断，可再次点击同一人的按钮重试。';}
+ finally{button.disabled=false;}
+}
+$('reset-download').addEventListener('click',()=>{if(lastReset?.completed)downloadCsv('ICU密码重置交付.csv',[['姓名','用户名','邮箱','新密码'],[lastReset.user.name,lastReset.user.username,lastReset.user.email,lastReset.password]]);});
+window.addEventListener('beforeunload',event=>{if(lastReset){event.preventDefault();event.returnValue='';}});

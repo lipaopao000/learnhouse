@@ -1,0 +1,38 @@
+{
+  "src/db/users.py": {
+    "original": "8aa3c78bc98b0b2be467517ed4f80a673b9e82b4b9ec2e8b0f6e1d4879a0ece7",
+    "patched": "e2254715ff14b448fd09464cd25ab54eaa89c26d04575e276bd574f8bfefb27d"
+  },
+  "src/services/users/users.py": {
+    "original": "c4ffc7946f1b38d56a08a5adb56d037ac6893f7f0b30f6200c81bddc85880f1f",
+    "patched": "149693da6a707fb1296a0e7f223f66f5000073d247904e85cd622cb942b6f2e5"
+  },
+  "src/security/auth.py": {
+    "original": "6f29cc0e365719717c421e48b8abfe1882cf88602cae0c23474510e931f3318b",
+    "patched": "ee1a0f702d624933ab1da59610f73ec47ad9c40d2b3c9e8ee4c23f6c08412aa7"
+  },
+  "src/routers/auth.py": {
+    "original": "a7498d10b8afe40e6925970e6c1a24f0d5826ef8d46708042a614bc41eae2ebd",
+    "patched": "e9f8c99ef371f5f28e6652fa81d9d96ec11ec33651dbec3d32c4aff52fb83cc3"
+  },
+  "src/services/auth/session.py": {
+    "original": "d8b29cdd53b8980c9064606c0f96cef9c58bc1acf3445c9e23f8764f6df78ac8",
+    "patched": "bbd2b9d5db96af058c871f7ee594abb7357033fb514d4c270fa590dd54055b39"
+  },
+  "src/routers/mfa.py": {
+    "original": "08ba1d2a1ea0fca644b9389d1af2341a4a30fb0c24a455f837bfa8da08ab402c",
+    "patched": "f38f22b3cb1f94f9aa3a22f6de73964e54b0a66cd76ef259dcf64e464f53eb99"
+  },
+  "src/services/email/utils.py": {
+    "original": "af582393c54a8a193a99a3b1b0ca0b4dbd7c684de302626553517b00ca51210c",
+    "patched": "9870bd3d0a7821d9bb5c97f7c2836e04f3e6dae3e7c7aa2290ad62919bb480b8"
+  },
+  "src/core/email_verification_policy.py": {
+    "original": "901540a69bb9c41e1ffa82bcc197ca0bb77398224d6e6c05f5fb926488aae72f",
+    "patched": "837d915adefc8aa61a6da3182fee34e1d72e8b3017052bfa0d1f546bc6264880"
+  },
+  "src/router.py": {
+    "original": "cb4ba905263d96f5c7c96ada7817f34e4b999d6d7b0985c731b99b509105cc16",
+    "patched": "f5b861d540b16dad165b1eef1bdfea0464b60ecd12353d0aba0454e40703a41e"
+  }
+}

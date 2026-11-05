@@ -1,3 +1,4 @@
+from typing import Literal
 import json
 from typing import Optional, TYPE_CHECKING
 from datetime import datetime
@@ -62,7 +63,8 @@ class UserUpdate(UserBase):
     # SECURITY: must be EmailStr (not str) so the user-profile update path
     # validates the format. UserBase already types email as EmailStr; this
     # redeclaration is kept only to signal it is a required field on update.
-    email: EmailStr
+    # Empty is allowed for an already unbound account; the service rejects clearing a bound address.
+    email: EmailStr | Literal['']
     avatar_image: Optional[str] = ""
     bio: Optional[str] = ""
     details: Optional[dict] = Field(default_factory=dict)
@@ -232,6 +234,8 @@ class SuperadminAPITokenUser(SQLModel):
 
 
 class User(UserBase, table=True):
+    # Public UserCreate still requires EmailStr. Unbound admin accounts store an empty string.
+    email: str = ""
     __table_args__ = (
         Index("ix_user_email", "email"),
         {"extend_existing": True},
