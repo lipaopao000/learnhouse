@@ -1,0 +1,597 @@
+{
+  "verified_at": "2026-11-05T08:52:39.746Z",
+  "summary": {
+    "courses": 3,
+    "hosted_videos": 8,
+    "chinese_videos": 5,
+    "english_videos": 3,
+    "total_minutes": 95.0,
+    "total_bytes": 549112055,
+    "member_only": true,
+    "original_drafts_untouched": true
+  },
+  "native_acceptance": {
+    "courses": [
+      {
+        "key": "cvc",
+        "name": "中心静脉导管｜置入与每日照护（中文视频）",
+        "url": "https://syyedu.toofun.fun/course/00239e79-fae7-47bc-998e-c1a67d3c32b1",
+        "videos": 2,
+        "published": true,
+        "public": false,
+        "thumbnail": "aff72d43-6a9f-49c0-9a39-be304051c9ee_thumbnail.webp"
+      },
+      {
+        "key": "cauti",
+        "name": "导尿管安全｜置入与感染预防（中文视频）",
+        "url": "https://syyedu.toofun.fun/course/f668c41c-492c-424d-9f6d-5ec8a00a753c",
+        "videos": 3,
+        "published": true,
+        "public": false,
+        "thumbnail": "d4a63da5-f434-481e-b7cc-c51d6c428f2b_thumbnail.webp"
+      },
+      {
+        "key": "critical-care-en",
+        "name": "重症床旁基础｜评估、交班与通气（英语补充）",
+        "url": "https://syyedu.toofun.fun/course/e584d0c7-ac50-4869-a83d-bddd149a6443",
+        "videos": 3,
+        "published": true,
+        "public": false,
+        "thumbnail": "fa390b71-1c02-423c-b001-8dbffe5eb0fd_thumbnail.webp"
+      }
+    ],
+    "videos": [
+      {
+        "key": "cvc-insert",
+        "url": "https://syyedu.toofun.fun/course/00239e79-fae7-47bc-998e-c1a67d3c32b1/activity/7ac1f1a7-b417-4881-9dfc-2381224f7266",
+        "duration": 1487.9985,
+        "width": 1280,
+        "height": 720,
+        "playback_advanced": true,
+        "seek_to": 967,
+        "seek_advanced": true,
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1023,
+            "status": 206,
+            "cache": "HIT"
+          },
+          {
+            "start": 168971608,
+            "end": 168972631,
+            "status": 206,
+            "cache": "MISS"
+          }
+        ],
+        "source_bytes_match": true
+      },
+      {
+        "key": "cvc-care",
+        "url": "https://syyedu.toofun.fun/course/00239e79-fae7-47bc-998e-c1a67d3c32b1/activity/7ce8dc7f-3f85-4519-98ea-a795e9882458",
+        "duration": 665.230667,
+        "width": 1280,
+        "height": 720,
+        "playback_advanced": true,
+        "seek_to": 432,
+        "seek_advanced": true,
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1023,
+            "status": 206,
+            "cache": "HIT"
+          },
+          {
+            "start": 82809857,
+            "end": 82810880,
+            "status": 206,
+            "cache": "MISS"
+          }
+        ],
+        "source_bytes_match": true
+      },
+      {
+        "key": "cauti-female",
+        "url": "https://syyedu.toofun.fun/course/f668c41c-492c-424d-9f6d-5ec8a00a753c/activity/8338785d-db99-4257-bdb1-066695784a6c",
+        "duration": 496.963133,
+        "width": 1280,
+        "height": 720,
+        "playback_advanced": true,
+        "seek_to": 323,
+        "seek_advanced": true,
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1023,
+            "status": 206,
+            "cache": "HIT"
+          },
+          {
+            "start": 65116517,
+            "end": 65117540,
+            "status": 206,
+            "cache": "MISS"
+          }
+        ],
+        "source_bytes_match": true
+      },
+      {
+        "key": "cauti-male",
+        "url": "https://syyedu.toofun.fun/course/f668c41c-492c-424d-9f6d-5ec8a00a753c/activity/af90a262-a3a9-4818-b5fe-10ecc7fc0a82",
+        "duration": 457.1567,
+        "width": 1280,
+        "height": 720,
+        "playback_advanced": true,
+        "seek_to": 297,
+        "seek_advanced": true,
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1023,
+            "status": 206,
+            "cache": "HIT"
+          },
+          {
+            "start": 58344139,
+            "end": 58345162,
+            "status": 206,
+            "cache": "MISS"
+          }
+        ],
+        "source_bytes_match": true
+      },
+      {
+        "key": "cauti-daily",
+        "url": "https://syyedu.toofun.fun/course/f668c41c-492c-424d-9f6d-5ec8a00a753c/activity/bcb0ac8d-b5a9-4e26-8513-397158bc7416",
+        "duration": 290.090667,
+        "width": 1280,
+        "height": 720,
+        "playback_advanced": true,
+        "seek_to": 188,
+        "seek_advanced": true,
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1023,
+            "status": 206,
+            "cache": "HIT"
+          },
+          {
+            "start": 29742145,
+            "end": 29743168,
+            "status": 206,
+            "cache": "MISS"
+          }
+        ],
+        "source_bytes_match": true
+      },
+      {
+        "key": "sbar",
+        "url": "https://syyedu.toofun.fun/course/e584d0c7-ac50-4869-a83d-bddd149a6443/activity/bacd1d81-82d2-40e6-b4f1-8f2b6c6527c3",
+        "duration": 468.566016,
+        "width": 1280,
+        "height": 720,
+        "playback_advanced": true,
+        "seek_to": 304,
+        "seek_advanced": true,
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1023,
+            "status": 206,
+            "cache": "HIT"
+          },
+          {
+            "start": 33891882,
+            "end": 33892905,
+            "status": 206,
+            "cache": "MISS"
+          }
+        ],
+        "source_bytes_match": true
+      },
+      {
+        "key": "assessment",
+        "url": "https://syyedu.toofun.fun/course/e584d0c7-ac50-4869-a83d-bddd149a6443/activity/992316ec-2d09-48d1-824b-0896a430b3ef",
+        "duration": 162.2,
+        "width": 1280,
+        "height": 720,
+        "playback_advanced": true,
+        "seek_to": 105,
+        "seek_advanced": true,
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1023,
+            "status": 206,
+            "cache": "HIT"
+          },
+          {
+            "start": 51654012,
+            "end": 51655035,
+            "status": 206,
+            "cache": "MISS"
+          }
+        ],
+        "source_bytes_match": true
+      },
+      {
+        "key": "ventilation",
+        "url": "https://syyedu.toofun.fun/course/e584d0c7-ac50-4869-a83d-bddd149a6443/activity/57042417-8b2c-40d7-9156-e5adf1585c01",
+        "duration": 1670.233333,
+        "width": 640,
+        "height": 360,
+        "playback_advanced": true,
+        "seek_to": 1085,
+        "seek_advanced": true,
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1023,
+            "status": 206,
+            "cache": "HIT"
+          },
+          {
+            "start": 58573703,
+            "end": 58574726,
+            "status": 206,
+            "cache": "MISS"
+          }
+        ],
+        "source_bytes_match": true
+      }
+    ],
+    "anonymous_denied": [
+      {
+        "key": "cvc-insert",
+        "status": 401
+      },
+      {
+        "key": "cvc-care",
+        "status": 401
+      },
+      {
+        "key": "cauti-female",
+        "status": 401
+      },
+      {
+        "key": "cauti-male",
+        "status": 401
+      },
+      {
+        "key": "cauti-daily",
+        "status": 401
+      },
+      {
+        "key": "sbar",
+        "status": 401
+      },
+      {
+        "key": "assessment",
+        "status": 401
+      },
+      {
+        "key": "ventilation",
+        "status": 401
+      }
+    ],
+    "ordinary_member_without_groups": true,
+    "library_url": "https://syyedu.toofun.fun/library/folder/d2c25f6f-0221-423f-8618-a49ddc4a000a",
+    "lqy_access": true,
+    "mobile_library": true,
+    "browser_errors": [],
+    "synthetic_account_deleted": true,
+    "verified_at": "2026-11-05T08:52:39.746Z"
+  },
+  "media": [
+    {
+      "key": "cvc-insert",
+      "file": "cvc-insert.mp4",
+      "bytes": 168972632,
+      "sha256": "0a1c84a4972b1857c7bac5d4f0cbba34ea1ac47643313dfa9be4092d82126416",
+      "duration": 1487.9985,
+      "original_duration": 1487.956,
+      "width": 1280,
+      "height": 720,
+      "video_codec": "h264",
+      "audio_codec": "aac",
+      "full_decode_passed": true,
+      "changes": "Full-length format conversion to H.264/AAC MP4; no cuts, crop, added captions or branding."
+    },
+    {
+      "key": "cvc-care",
+      "file": "cvc-care.mp4",
+      "bytes": 82810881,
+      "sha256": "6d10edca4d440a403c51dca5142ca35604fd2cd3624caef81cb31bed63d6fcc2",
+      "duration": 665.230667,
+      "original_duration": 665.172,
+      "width": 1280,
+      "height": 720,
+      "video_codec": "h264",
+      "audio_codec": "aac",
+      "full_decode_passed": true,
+      "changes": "Full-length format conversion to H.264/AAC MP4; no cuts, crop, added captions or branding."
+    },
+    {
+      "key": "cauti-female",
+      "file": "cauti-female.mp4",
+      "bytes": 65117541,
+      "sha256": "1a41aafb520eecf963c9202b1cc65d15ef27b564a2e961509e42af1db33208f9",
+      "duration": 496.963133,
+      "original_duration": 496.963133,
+      "width": 1280,
+      "height": 720,
+      "video_codec": "h264",
+      "audio_codec": "aac",
+      "full_decode_passed": true,
+      "changes": "Full-length format conversion to H.264/AAC MP4; no cuts, crop, added captions or branding."
+    },
+    {
+      "key": "cauti-male",
+      "file": "cauti-male.mp4",
+      "bytes": 58345163,
+      "sha256": "8380a65f4cf17446e067dc7ca629193c65798a910c7430af15a124170b0e6226",
+      "duration": 457.1567,
+      "original_duration": 457.1567,
+      "width": 1280,
+      "height": 720,
+      "video_codec": "h264",
+      "audio_codec": "aac",
+      "full_decode_passed": true,
+      "changes": "Full-length format conversion to H.264/AAC MP4; no cuts, crop, added captions or branding."
+    },
+    {
+      "key": "cauti-daily",
+      "file": "cauti-daily.mp4",
+      "bytes": 29743169,
+      "sha256": "9e0a45ba718581550426ea5c368e723f1303b9ac0c21cce9c3d5e7069b16c1e8",
+      "duration": 290.090667,
+      "original_duration": 290.090667,
+      "width": 1280,
+      "height": 720,
+      "video_codec": "h264",
+      "audio_codec": "aac",
+      "full_decode_passed": true,
+      "changes": "Full-length format conversion to H.264/AAC MP4; no cuts, crop, added captions or branding."
+    },
+    {
+      "key": "sbar",
+      "file": "sbar.mp4",
+      "bytes": 33892906,
+      "sha256": "49dde1f0210d12a2ebcb718e535c70470fb481e37b4f170b8476226bba89103b",
+      "duration": 468.566016,
+      "original_duration": 468.566667,
+      "width": 1280,
+      "height": 720,
+      "video_codec": "h264",
+      "audio_codec": "aac",
+      "full_decode_passed": true,
+      "changes": "Lossless remux to fast-start MP4; no cuts, added captions or branding."
+    },
+    {
+      "key": "assessment",
+      "file": "assessment.mp4",
+      "bytes": 51655036,
+      "sha256": "985b3a00cf6a236fcd699ef0a186edb65175a75c8c424bb4d9217b4b381b0e8d",
+      "duration": 162.2,
+      "original_duration": 162.2,
+      "width": 1280,
+      "height": 720,
+      "video_codec": "h264",
+      "audio_codec": "aac",
+      "full_decode_passed": true,
+      "changes": "Lossless remux to fast-start MP4; no cuts, added captions or branding."
+    },
+    {
+      "key": "ventilation",
+      "file": "ventilation.mp4",
+      "bytes": 58574727,
+      "sha256": "1a461808f4d142e45c6ffd65f93eac53d8bbd36d2d4444ba692fe182afce4d46",
+      "duration": 1670.233333,
+      "original_duration": 1670.233333,
+      "width": 640,
+      "height": 360,
+      "video_codec": "h264",
+      "audio_codec": "aac",
+      "full_decode_passed": true,
+      "changes": "Lossless remux to fast-start MP4; no cuts, added captions or branding."
+    }
+  ],
+  "persisted_sources": [
+    {
+      "key": "cvc/cvc-insert",
+      "sha256": "0a1c84a4972b1857c7bac5d4f0cbba34ea1ac47643313dfa9be4092d82126416",
+      "source_matches_uploaded_file": true
+    },
+    {
+      "key": "cvc/cvc-care",
+      "sha256": "6d10edca4d440a403c51dca5142ca35604fd2cd3624caef81cb31bed63d6fcc2",
+      "source_matches_uploaded_file": true
+    },
+    {
+      "key": "cauti/cauti-female",
+      "sha256": "1a41aafb520eecf963c9202b1cc65d15ef27b564a2e961509e42af1db33208f9",
+      "source_matches_uploaded_file": true
+    },
+    {
+      "key": "cauti/cauti-male",
+      "sha256": "8380a65f4cf17446e067dc7ca629193c65798a910c7430af15a124170b0e6226",
+      "source_matches_uploaded_file": true
+    },
+    {
+      "key": "cauti/cauti-daily",
+      "sha256": "9e0a45ba718581550426ea5c368e723f1303b9ac0c21cce9c3d5e7069b16c1e8",
+      "source_matches_uploaded_file": true
+    },
+    {
+      "key": "critical-care-en/sbar",
+      "sha256": "49dde1f0210d12a2ebcb718e535c70470fb481e37b4f170b8476226bba89103b",
+      "source_matches_uploaded_file": true
+    },
+    {
+      "key": "critical-care-en/assessment",
+      "sha256": "985b3a00cf6a236fcd699ef0a186edb65175a75c8c424bb4d9217b4b381b0e8d",
+      "source_matches_uploaded_file": true
+    },
+    {
+      "key": "critical-care-en/ventilation",
+      "sha256": "1a461808f4d142e45c6ffd65f93eac53d8bbd36d2d4444ba692fe182afce4d46",
+      "source_matches_uploaded_file": true
+    }
+  ],
+  "automatic_prefetch": {
+    "completed": 8,
+    "expected": 8,
+    "scheduled_task_only": true,
+    "completed_before_browser_video_requests": true,
+    "last_observation": {
+      "at": "2026-11-05T08:50:49.690496+00:00",
+      "completed": 8,
+      "videos": [
+        {
+          "key": "cvc/cvc-insert",
+          "uri": "/api/v1/stream/video/org_32e55dad-43ad-4eb4-ac0d-ecd1af125ddc/course_00239e79-fae7-47bc-998e-c1a67d3c32b1/activity_7ac1f1a7-b417-4881-9dfc-2381224f7266/b669886a-12c1-4e88-9ef3-325ba10c340f_video.mp4",
+          "entry": {
+            "fingerprint": "168972632:1793868043894557400",
+            "next_offset": 168972632,
+            "complete": true,
+            "checked_at": "2026-11-05T08:50:45.7685170Z",
+            "error": null
+          }
+        },
+        {
+          "key": "cvc/cvc-care",
+          "uri": "/api/v1/stream/video/org_32e55dad-43ad-4eb4-ac0d-ecd1af125ddc/course_00239e79-fae7-47bc-998e-c1a67d3c32b1/activity_7ce8dc7f-3f85-4519-98ea-a795e9882458/a4c501f1-b5f5-443a-8cf0-36c92c2c1031_video.mp4",
+          "entry": {
+            "fingerprint": "82810881:1793868049752369500",
+            "next_offset": 82810881,
+            "complete": true,
+            "checked_at": "2026-11-05T08:47:55.4097323Z",
+            "error": null
+          }
+        },
+        {
+          "key": "cauti/cauti-female",
+          "uri": "/api/v1/stream/video/org_32e55dad-43ad-4eb4-ac0d-ecd1af125ddc/course_f668c41c-492c-424d-9f6d-5ec8a00a753c/activity_8338785d-db99-4257-bdb1-066695784a6c/9a840a20-7f0d-4cba-936e-81288e470dea_video.mp4",
+          "entry": {
+            "fingerprint": "65117541:1793868056503594000",
+            "next_offset": 65117541,
+            "complete": true,
+            "checked_at": "2026-11-05T08:46:25.7546865Z",
+            "error": null
+          }
+        },
+        {
+          "key": "cauti/cauti-male",
+          "uri": "/api/v1/stream/video/org_32e55dad-43ad-4eb4-ac0d-ecd1af125ddc/course_f668c41c-492c-424d-9f6d-5ec8a00a753c/activity_af90a262-a3a9-4818-b5fe-10ecc7fc0a82/e4acde35-cd1b-4160-8c3b-0fdde2cd5fc7_video.mp4",
+          "entry": {
+            "fingerprint": "58345163:1793868061069171900",
+            "next_offset": 58345163,
+            "complete": true,
+            "checked_at": "2026-11-05T08:43:20.4902507Z",
+            "error": null
+          }
+        },
+        {
+          "key": "cauti/cauti-daily",
+          "uri": "/api/v1/stream/video/org_32e55dad-43ad-4eb4-ac0d-ecd1af125ddc/course_f668c41c-492c-424d-9f6d-5ec8a00a753c/activity_bcb0ac8d-b5a9-4e26-8513-397158bc7416/6396507d-aef5-43bb-8bf2-418f4e52e529_video.mp4",
+          "entry": {
+            "fingerprint": "29743169:1793868063604530600",
+            "next_offset": 29743169,
+            "complete": true,
+            "checked_at": "2026-11-05T08:42:31.6002022Z",
+            "error": null
+          }
+        },
+        {
+          "key": "critical-care-en/sbar",
+          "uri": "/api/v1/stream/video/org_32e55dad-43ad-4eb4-ac0d-ecd1af125ddc/course_e584d0c7-ac50-4869-a83d-bddd149a6443/activity_bacd1d81-82d2-40e6-b4f1-8f2b6c6527c3/4302bab7-2f52-4b90-bbb5-37f194352af0_video.mp4",
+          "entry": {
+            "fingerprint": "33892906:1793868067689575900",
+            "next_offset": 33892906,
+            "complete": true,
+            "checked_at": "2026-11-05T08:42:07.2627744Z",
+            "error": null
+          }
+        },
+        {
+          "key": "critical-care-en/assessment",
+          "uri": "/api/v1/stream/video/org_32e55dad-43ad-4eb4-ac0d-ecd1af125ddc/course_e584d0c7-ac50-4869-a83d-bddd149a6443/activity_992316ec-2d09-48d1-824b-0896a430b3ef/572b347e-c914-46dd-85d6-39862408f875_video.mp4",
+          "entry": {
+            "fingerprint": "51655036:1793868137271034000",
+            "next_offset": 51655036,
+            "complete": true,
+            "checked_at": "2026-11-05T08:45:14.8527754Z",
+            "error": null
+          }
+        },
+        {
+          "key": "critical-care-en/ventilation",
+          "uri": "/api/v1/stream/video/org_32e55dad-43ad-4eb4-ac0d-ecd1af125ddc/course_e584d0c7-ac50-4869-a83d-bddd149a6443/activity_57042417-8b2c-40d7-9156-e5adf1585c01/5ce253e8-12fb-4309-ae17-013d62378745_video.mp4",
+          "entry": {
+            "fingerprint": "58574727:1793868141686422400",
+            "next_offset": 58574727,
+            "complete": true,
+            "checked_at": "2026-11-05T08:44:28.7605648Z",
+            "error": null
+          }
+        }
+      ]
+    }
+  },
+  "artwork": {
+    "maintainer": true,
+    "pages": [
+      {
+        "url": "https://syyedu.toofun.fun/library/folder/d2c25f6f-0221-423f-8618-a49ddc4a000a",
+        "key": "library-final",
+        "cover_rendered": true
+      },
+      {
+        "url": "https://syyedu.toofun.fun/course/00239e79-fae7-47bc-998e-c1a67d3c32b1",
+        "key": "cvc-cover-final",
+        "cover_rendered": true
+      },
+      {
+        "url": "https://syyedu.toofun.fun/course/f668c41c-492c-424d-9f6d-5ec8a00a753c",
+        "key": "cauti-cover-final",
+        "cover_rendered": true
+      },
+      {
+        "url": "https://syyedu.toofun.fun/course/e584d0c7-ac50-4869-a83d-bddd149a6443",
+        "key": "critical-care-en-cover-final",
+        "cover_rendered": true
+      }
+    ],
+    "mobile": true,
+    "all_three_cover_bytes_match_source_assets": true,
+    "library_all_three_covers_visually_inspected": true
+  },
+  "sources": [
+    {
+      "course_key": "cvc",
+      "credit": "台湾卫生福利部疾病管制署",
+      "source": "https://www.cdc.gov.tw/Category/MPage/K20wqCzSTz_eSz3Yyk0m9w",
+      "license": "https://www.cdc.gov.tw/Category/Fpage/TxkBIR9agw_IBRRmvn9TcQ",
+      "version": "2015",
+      "language": "中文（原片繁体字幕）"
+    },
+    {
+      "course_key": "cauti",
+      "credit": "台湾卫生福利部疾病管制署",
+      "source": "https://www.cdc.gov.tw/Category/MPage/K20wqCzSTz_eSz3Yyk0m9w",
+      "license": "https://www.cdc.gov.tw/Category/Fpage/TxkBIR9agw_IBRRmvn9TcQ",
+      "version": "2017页面更新版",
+      "language": "中文（原片繁体字幕）"
+    },
+    {
+      "course_key": "critical-care-en",
+      "credit": "University of Edinburgh / NHS Lothian；原课程 COVID-19 Critical Care: Understanding and Application",
+      "source": "https://open.ed.ac.uk/covid-19-critical-care-application-and-understanding/",
+      "license": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "version": "2020课程；2022媒体库发布",
+      "language": "英语原声，中文导读，无中文字幕"
+    }
+  ]
+}
