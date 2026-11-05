@@ -18,7 +18,7 @@
   "synthetic_accounts_deleted": true,
   "no_live_email_sent": true,
   "binding_mail_sender_tested_with_mock": true,
-  "verified_at": "2026-11-05T03:14:27.909Z",
+  "verified_at": "2026-11-05T03:31:48.216Z",
   "image": "local/learnhouse:20261105-username-accounts-v4",
   "image_digest": "sha256:9a4e3975d3f6ade66577935820feb12df91317faa4adb870064077e9bf52395b",
   "stack": 17,
@@ -28,5 +28,8 @@
   "native_style_mobile_reviewed": true,
   "mobile_horizontal_overflow": false,
   "original_font_asset_loaded": true,
-  "draft_login_instructions_updated": 7
+  "draft_login_instructions_updated": 7,
+  "profile_edit_without_email_or_last_name": true,
+  "avatar_upload_without_email": true,
+  "legacy_profile_redirect_verified": true
 }

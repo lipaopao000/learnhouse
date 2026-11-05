@@ -21,12 +21,7 @@ LOCATIONS='''
   proxy_set_header X-Forwarded-Proto https;
  }
  location = /account/details {
-  proxy_pass http://app:80/account/general;
-  proxy_set_header Host $http_host;
-  proxy_set_header X-Forwarded-Host $http_host;
-  proxy_set_header X-Real-IP $remote_addr;
-  proxy_set_header X-Forwarded-For $remote_addr;
-  proxy_set_header X-Forwarded-Proto https;
+  return 302 "/account/general#profile-details";
  }
 '''
 HEADERS='''add_header Cache-Control "no-store" always;
