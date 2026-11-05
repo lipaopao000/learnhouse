@@ -1,0 +1,212 @@
+{
+  "root_url": "https://syyedu.toofun.fun/library/folder/352266da-f334-44cd-8e74-e6a4c7f50c11",
+  "course_url": "https://syyedu.toofun.fun/course/841d2f7f-306d-4f46-8bb3-d72fc4d380f6",
+  "folders": 7,
+  "communities": 4,
+  "posts": 12,
+  "lessons": 4,
+  "playgrounds": 2,
+  "pdf_pages": 8,
+  "workbook_sha256": "8fd7f414867116d45cb676375532af3397a47139182fbdea6fe3e273124d370a",
+  "new_resources_public": false,
+  "community_urls": [
+    "https://syyedu.toofun.fun/community/54c8fe39-afe1-47da-b5ef-63a6efbb1ae4",
+    "https://syyedu.toofun.fun/community/7e9821bf-9675-45ef-91a8-492fdff9873c",
+    "https://syyedu.toofun.fun/community/b8b62d2f-fbd2-48ca-83d9-46d8be9b7f04",
+    "https://syyedu.toofun.fun/community/113d4253-6bf7-4a28-889f-0a7ec6515508"
+  ],
+  "synthetic_account_deleted": true,
+  "verified_at": "2026-11-05T07:29:22.057Z",
+  "ordinary_member_access": {
+    "ICU教学示例馆": {
+      "items": 6,
+      "subfolders": 6
+    },
+    "01 入科与交接班": {
+      "items": 3,
+      "subfolders": 0
+    },
+    "02 呼吸与循环": {
+      "items": 3,
+      "subfolders": 0
+    },
+    "03 医护协作与安全": {
+      "items": 3,
+      "subfolders": 0
+    },
+    "04 病例与教学考核": {
+      "items": 3,
+      "subfolders": 0
+    },
+    "05 指南与文献阅读": {
+      "items": 3,
+      "subfolders": 0
+    },
+    "06 互动练习与模板": {
+      "items": 2,
+      "subfolders": 0
+    }
+  },
+  "ordinary_member_without_groups": true,
+  "library_native_ui": true,
+  "rich_discussion_readable": true,
+  "course_native_ui": true,
+  "interactive_tools": {
+    "sbar": {
+      "example": true,
+      "generate": true,
+      "copy_or_selection": true,
+      "clear": true
+    },
+    "pico": {
+      "example": true,
+      "generate": true,
+      "copy_or_selection": true,
+      "clear": true
+    }
+  },
+  "mobile_layout_checked": true,
+  "lqy_access": true,
+  "anonymous_denied": {
+    "folder": 403,
+    "community": 403,
+    "course": 403,
+    "playground": 401,
+    "media": 403
+  },
+  "pdf_download_sha256_verified": true,
+  "browser_errors": [],
+  "native_pdf_cookie_download": true,
+  "compression_protocol_checks": 12,
+  "app_image": "local/learnhouse:20261105-icu-examples-v5",
+  "course_covers": {
+    "count": 12,
+    "all_publication_states_preserved": true,
+    "assets": [
+      {
+        "course_uuid": "course_70ef8611-7131-4bf1-aaff-9ac65348798f",
+        "title": "平台使用与培训须知",
+        "before_thumbnail": "",
+        "thumbnail_image": "a9a1f394-3f04-4f62-baed-3fcd435b1e29_thumbnail.webp",
+        "published": false,
+        "public": false,
+        "asset_sha256": "b3533246246b253b7e3068030289108f406c0a38246fe71f46359636e9ec6d3f",
+        "asset_file": "covers/platform.webp"
+      },
+      {
+        "course_uuid": "course_579a638c-0f14-4910-8a89-2b779a979fca",
+        "title": "ICU入科与规范交接班",
+        "before_thumbnail": "",
+        "thumbnail_image": "ddd87c71-9e70-496a-ae11-42daecb582d5_thumbnail.webp",
+        "published": false,
+        "public": false,
+        "asset_sha256": "758a8080333dd3b4fddc03287926cc39a6fd49c4613187a7695febe67ac303dd",
+        "asset_file": "covers/handover.webp"
+      },
+      {
+        "course_uuid": "course_2482967d-bbab-4c59-bdc5-4f220824ef80",
+        "title": "气道管理与机械通气",
+        "before_thumbnail": "",
+        "thumbnail_image": "8128adaf-2fb1-41be-9b0a-9c70bc87b4fd_thumbnail.webp",
+        "published": false,
+        "public": false,
+        "asset_sha256": "01033657ad83a953a9ccdc274082ab9e9fece655eca425b266e4f429503c5f17",
+        "asset_file": "covers/ventilation.webp"
+      },
+      {
+        "course_uuid": "course_e379be06-dbe5-4960-9978-269da3b19029",
+        "title": "休克与血流动力学",
+        "before_thumbnail": "",
+        "thumbnail_image": "22cd12a4-297f-415e-8726-c052c6f6208b_thumbnail.webp",
+        "published": false,
+        "public": false,
+        "asset_sha256": "7462eaf99915aa6b52885eba49d06e52525303032e73bbace53bcc5ef30c8b32",
+        "asset_file": "covers/circulation.webp"
+      },
+      {
+        "course_uuid": "course_e2f45ec6-e54f-4348-ae37-083fdb973a57",
+        "title": "感染与脓毒症",
+        "before_thumbnail": "",
+        "thumbnail_image": "87f999fd-16f9-46a4-861d-80fcf949b299_thumbnail.webp",
+        "published": false,
+        "public": false,
+        "asset_sha256": "3f0122122fbc95226f52b1a55814e624dbc313fac9b52c7184267f63835aa0b3",
+        "asset_file": "covers/infection.webp"
+      },
+      {
+        "course_uuid": "course_94b2a377-6fa1-4456-9e68-f0c35b6e1435",
+        "title": "镇痛镇静、谵妄与早期康复",
+        "before_thumbnail": "",
+        "thumbnail_image": "78c075bc-39ec-4224-b635-d3ef84d93645_thumbnail.webp",
+        "published": false,
+        "public": false,
+        "asset_sha256": "317b3ea7c07c62053de94c4a7c1e7d885ec0e49e3d528750ae9842a6f325b5e7",
+        "asset_file": "covers/sedation.webp"
+      },
+      {
+        "course_uuid": "course_6e3a0010-90b9-4458-bd76-590b6efa6187",
+        "title": "AKI、CRRT与内环境",
+        "before_thumbnail": "",
+        "thumbnail_image": "d50945b4-88dd-40ee-add0-84fec62fb148_thumbnail.webp",
+        "published": false,
+        "public": false,
+        "asset_sha256": "5a7f2558d72f6e7a0ac2c432ba1059e8bbee6e8adfe55f2a1348817286298178",
+        "asset_file": "covers/renal.webp"
+      },
+      {
+        "course_uuid": "course_9ab7a236-a7c9-4d24-8dae-de7cc6a7f097",
+        "title": "营养与常见系统问题",
+        "before_thumbnail": "",
+        "thumbnail_image": "7b954902-4a93-4d71-a72e-bf9a3e68821e_thumbnail.webp",
+        "published": false,
+        "public": false,
+        "asset_sha256": "095243d67c23e117f12f173666cdf5495de70f2d6e708a918b4fbfccfca9f7ed",
+        "asset_file": "covers/nutrition.webp"
+      },
+      {
+        "course_uuid": "course_201f0faa-b5eb-426c-a8da-ce3868b84297",
+        "title": "抢救技能与护理配合",
+        "before_thumbnail": "",
+        "thumbnail_image": "06c65d46-9a83-4505-91db-5a3f3efb2562_thumbnail.webp",
+        "published": false,
+        "public": false,
+        "asset_sha256": "7e27a271bf7f574e8f1d53519b8122715a39bb7044270a7978ded3f256c9400d",
+        "asset_file": "covers/resuscitation.webp"
+      },
+      {
+        "course_uuid": "course_01fc0a2f-3a28-4417-b756-d8ca30ee19ce",
+        "title": "病例讨论与教学考核",
+        "before_thumbnail": "",
+        "thumbnail_image": "800b8532-4c3f-49c7-b1a8-3d3e93b88171_thumbnail.webp",
+        "published": false,
+        "public": false,
+        "asset_sha256": "1a87d44c345860d18ef8a5653ca1d4242c057ce93976ff69275017e115de0ade",
+        "asset_file": "covers/cases.webp"
+      },
+      {
+        "course_uuid": "course_9c364999-ed99-4b38-a94f-e3e8b70c3dae",
+        "title": "管理员工作台与交接手册",
+        "before_thumbnail": "",
+        "thumbnail_image": "93a289b5-38c1-4485-9fce-e25edc80b731_thumbnail.webp",
+        "published": false,
+        "public": false,
+        "asset_sha256": "3d096404ada94d964c1fbf9d7eaa4db63379e25cb5525a26eea6e16581f4ccfa",
+        "asset_file": "covers/admin.webp"
+      },
+      {
+        "course_uuid": "course_841d2f7f-306d-4f46-8bb3-d72fc4d380f6",
+        "title": "ICU教学示例｜交接班、病例表达与文献阅读",
+        "before_thumbnail": "",
+        "thumbnail_image": "f8265a89-66b8-4ba9-8d12-83589fb5fdee_thumbnail.webp",
+        "published": true,
+        "public": false,
+        "asset_sha256": "d1daf7c62b6a8e59050680df43f49a929fcb656ff4d0a48cf832c1208f58270a",
+        "asset_file": "covers/examples.webp"
+      }
+    ],
+    "bytes_verified": 12,
+    "native_desktop_and_mobile": true,
+    "verified_at": "2026-11-05T07:42:12.845Z"
+  },
+  "existing_draft_lessons_or_publication_modified": false
+}

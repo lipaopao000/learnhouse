@@ -1,0 +1,22 @@
+{
+  "mode": "built-in image_gen",
+  "base_prompt": "Use case: illustration-story. Asset type: professional Chinese ICU teaching course cover, wide landscape about 16:9. Create ONE beautiful restrained editorial illustration. Style: precise human-drawn pen contours with a few flat matte gouache color shapes and very subtle natural uncoated paper grain; reminiscent of a carefully art-directed medical journal cover, calm and mature. Composition: one clear subject occupying the central 65%, generous negative space and generous crop-safe margins, no border. Background: warm near-white ivory, not beige darkness. Clear silhouette legible as a small thumbnail. Lighting flat and natural. No lettering, no words, no numbers, no logos, no watermarks. No shiny 3D, no neon, no lens flare, no dramatic glow, no busy collage, no fake UI, no uncanny faces or extra anatomy. This is illustrative cover artwork, not a clinical instruction diagram. Subject: ",
+  "subjects": {
+    "platform": "Editorial illustration of an orderly open learning notebook, a plain identification card with NO writing, and a simple navigation compass, conveying orientation to an ICU training platform. Muted slate blue and warm ivory.",
+    "handover": "Editorial illustration of a single structured clipboard with four visually separate blank sections, two subtly indicated gloved hands passing it between colleagues. No people faces, no letters or text. Muted teal and warm ivory.",
+    "ventilation": "Editorial medical illustration of one anatomically coherent pair of human lungs with a branching trachea, with a discreet ventilator breathing circuit line in the background, suggesting airway and mechanical ventilation teaching. Muted petrol blue and warm ivory.",
+    "circulation": "Editorial medical illustration of one simplified anatomically coherent human heart, with a very subtle flowing arterial line around it, suggesting shock and hemodynamics education. Muted terracotta red and warm ivory.",
+    "infection": "Editorial scientific illustration of a few distinct microscopic bacterial forms seen through a circular microscope field, carefully drawn with ink lines, conveying infection and sepsis education. No cute characters. Muted olive green and warm ivory.",
+    "sedation": "Editorial illustration of a quiet ICU bedside represented by a neatly made hospital bed and an adjacent rehabilitation chair, a small calm daylight rectangle suggesting sleep, comfort and recovery. No patient, no person. Muted dusty lavender and warm ivory.",
+    "renal": "Editorial medical illustration of two anatomically coherent kidneys, with one subtle external filter cartridge and a restrained fluid line motif, conveying kidney support and CRRT learning. Muted ochre and warm ivory.",
+    "nutrition": "Editorial illustration of a nutrition flask and a simple feeding tube set beside a carefully drawn bowl and a small grain stalk, conveying critical care nutrition and systems support. No labels or text. Muted sage green and warm ivory.",
+    "resuscitation": "Editorial illustration of a manual resuscitation bag with mask, a neatly coiled airway tube, and folded gloves arranged as a calm clinical skills teaching still life. No real patient, no procedure in progress. Muted burnt orange and warm ivory.",
+    "cases": "Editorial illustration of several overlapping plain case-study cards, a magnifying glass and a pencil arranged on a teaching table, conveying clinical case discussion and assessment. All paper blank with only sparse abstract rules, NO writing. Muted deep navy and warm ivory.",
+    "admin": "Editorial illustration of neatly arranged archival folders, a simple key and a checklist ledger, conveying a teaching administrator handover desk. No writing or numbers. Muted warm grey and warm ivory.",
+    "examples": "Editorial illustration of an open workbook with a discreet stethoscope and four simple geometric page tabs, conveying ICU communication practice and evidence reading examples. No writing or text. Muted teal, slate and warm ivory."
+  },
+  "reviewed_edits": {
+    "sedation": "Remove the vase and flowers; preserve the bed, rehabilitation chair, equipment, window daylight and original illustration style.",
+    "renal": "Remove the external cartridge and artificial tubing; preserve the paired kidneys, natural vessels and ureters. The cover is illustrative, not a treatment diagram."
+  }
+}
